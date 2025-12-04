@@ -273,16 +273,11 @@ const ExplorePage: React.FC = () => {
       <Header />
       
       {/* Hero Section */}
-      <div className="relative h-64 md:h-80 w-full overflow-hidden">
-        <img 
-          src="./assets/bg_hand.jpg"
-          alt="Explore Banner" 
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-        
+      <div className="relative h-64 md:h-80 w-full overflow-hidden inset-0 bg-black/30 backdrop-blur-sm z-10 bg-[url('/assets/bg_hand.jpg')] bg-cover bg-center">
+        <div className='w-full h-full bg-[#1B5E20CC]'/>
         <div className="absolute inset-0 bg-(--green-color)/40 flex flex-col items-center justify-center text-center px-4">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-md">Explore Items</h1>
-          <p className="text-white text-lg md:text-xl font-medium drop-shadow-sm">Find items to swap, donate, or discover</p>
+          <p className="text-white text-lg md:text-xl drop-shadow-sm">Find items to swap, donate, or discover</p>
         </div>
       </div>
 
