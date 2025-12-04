@@ -1,0 +1,371 @@
+'use client';
+
+import React, { useState, useEffect, useMemo } from 'react';
+import Footer from '../footer';
+import Header from '../header';
+
+
+// Todo: line-206
+
+
+interface Product {
+  id: number;
+  title: string;
+  image: string;
+  type: 'Donate' | 'Swap';
+  category: string;
+  condition: string;
+}
+
+interface FilterState {
+  categories: string[];
+  conditions: string[];
+}
+
+const MOCK_DATABASE: Product[] = [
+  { id: 1, title: "Stanley 40 oz Quencher Mist", image: "./assets/mock_datas/mock_data1.png", type: "Swap", category: "Home Goods", condition: "Good" },
+  { id: 2, title: "JBL Portable Bluetooth Speaker", image: "./assets/mock_datas/mock_data2.png", type: "Donate", category: "Electronics", condition: "Used" },
+  { id: 3, title: "2nd Hand Introduction to Parallel Programming", image: "./assets/mock_datas/mock_data3.png", type: "Donate", category: "Books", condition: "Good" },
+  { id: 4, title: "IKEA Desk Lamp", image: "./assets/mock_datas/mock_data4.png", type: "Swap", category: "Home Goods", condition: "Liked New" },
+  { id: 5, title: "One Life Graphic T-shirt", image: "./assets/mock_datas/mock_data5.png", type: "Swap", category: "Clothing", condition: "Used" },
+  { id: 6, title: "Wireless Mechanic Keyboard", image: "./assets/mock_datas/mock_data6.png", type: "Swap", category: "Electronics", condition: "Liked New" },
+  { id: 7, title: "2nd Hand North Carolina Hoodie", image: "./assets/mock_datas/mock_data7.png", type: "Donate", category: "Clothing", condition: "Good" },
+  { id: 8, title: "IKEA Frakta Bag", image: "./assets/mock_datas/mock_data8.png", type: "Donate", category: "Others", condition: "Good" },
+  { id: 9, title: "Stanley 40 oz Quencher Mist", image: "./assets/mock_datas/mock_data9.png", type: "Swap", category: "Others", condition: "Used" },
+  { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", image: "./assets/mock_datas/mock_data10.png", type: "Donate", category: "Books", condition: "Good" },
+  { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", image: "./assets/mock_datas/mock_data11.png", type: "Swap", category: "Others", condition: "Liked New" },
+  { id: 12, title: "Tote Bag Oura Matcha", image: "./assets/mock_datas/mock_data12.png", type: "Donate", category: "Clothing", condition: "Good" },
+  { id: 13, title: "Rainbow Sticky Note Cube", image: "./assets/mock_datas/mock_data13.png", type: "Donate", category: "Stationery", condition: "Liked New" },
+  { id: 14, title: "Wireless Bluetooth Headphones", image: "./assets/mock_datas/mock_data14.png", type: "Swap", category: "Electronics", condition: "Good" },
+  { id: 15, title: "2nd Hand Muji Desk Organiser", image: "./assets/mock_datas/mock_data15.png", type: "Donate", category: "Home Goods", condition: "Used" },
+  { id: 16, title: "2nd Hand Baseball Cap", image: "./assets/mock_datas/mock_data16.png", type: "Swap", category: "Clothing", condition: "Used" },
+  // ... Duplicate data to demonstrate "Load More" functionality
+  { id: 17, title: "Stanley 40 oz Quencher Mist", image: "./assets/mock_datas/mock_data1.png", type: "Swap", category: "Electronics", condition: "Good" },
+  { id: 18, title: "JBL Portable Bluetooth Speaker", image: "./assets/mock_datas/mock_data2.png", type: "Donate", category: "Home Goods", condition: "Liked New" },
+  { id: 19, title: "2nd Hand Introduction to Parallel Programming", image: "./assets/mock_datas/mock_data3.png", type: "Donate", category: "Others", condition: "Used" },
+  { id: 20, title: "IKEA Desk Lamp", image: "./assets/mock_datas/mock_data4.png", type: "Swap", category: "Home Goods", condition: "Good" },
+];
+
+
+
+const Button = ({ 
+  children, 
+  variant = 'primary', 
+  className = '', 
+  onClick,
+  active = false
+}: { children: React.ReactNode, variant?: 'primary' | 'outline' | 'filter', className?: string, onClick?: () => void, active?: boolean }) => {
+  const baseStyle = "min-w-48 font-bold text-lg transition-all duration-200 flex items-center justify-center ";
+  
+  const variants = {
+    primary: "bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) rounded-full py-2 px-6",
+    outline: "bg-white border border-(--green-color) text-(--green-color) hover:bg-green-50 rounded-full py-2 px-6",
+    filter: `rounded-full py-3 px-8 text-lg shadow-sm flex gap-2 items-center ${active ? 'bg-(--green-color) text-white' : 'bg-white text-(--green-color) hover:bg-gray-50'}`
+  };
+
+  return (
+    <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
+      {children}
+    </button>
+  );
+};
+
+const FilterSidebar = ({ 
+  isOpen, 
+  onClose, 
+  filters, 
+  setFilters,
+  onApply
+}: { 
+  isOpen: boolean; 
+  onClose: () => void;
+  filters: FilterState;
+  setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
+  onApply: () => void;
+}) => {
+  const categories = ["Clothing", "Books", "Electronics", "Home Goods", "Stationery", "Others"];
+  const conditions = ["Liked New", "Good", "Used"];
+
+  const toggleFilter = (type: 'categories' | 'conditions', value: string) => {
+    setFilters(prev => {
+      const list = prev[type];
+      const newList = list.includes(value) 
+        ? list.filter(item => item !== value) 
+        : [...list, value];
+      return { ...prev, [type]: newList };
+    });
+  };
+
+  const clearAll = () => {
+    setFilters({ categories: [], conditions: [] });
+  };
+
+  return (
+    <div className={`fixed inset-0 z-50 flex justify-end ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+      <div 
+        className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`} 
+        onClick={onClose}
+      />
+      
+      <div className={`relative bg-white w-full max-w-md h-full p-8 shadow-2xl overflow-y-auto flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="flex justify-end mb-4">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full" aria-label="Close filters">
+            <svg width={32} height={32} viewBox="0 0 24 24" className="text-(--black-color)" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="mb-8">
+          <h3 className="text-(--green-color) text-2xl font-bold mb-6">Category</h3>
+          <div className="space-y-4">
+            {categories.map((cat) => (
+              <label key={cat} className="flex items-center cursor-pointer group">
+                <div className="relative flex items-center">
+                  <input 
+                    type="checkbox" 
+                    className="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded bg-gray-100 checked:bg-(--green-color) checked:border-(--green-color) transition-colors"
+                    checked={filters.categories.includes(cat)}
+                    onChange={() => toggleFilter('categories', cat)}
+                  />
+                  <svg className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                     <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <span className="ml-4 text-xl font-bold text-(--black-color) group-hover:text-(--green-color) transition-colors">{cat}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-12">
+          <h3 className="text-(--green-color) text-2xl font-bold mb-6">Condition</h3>
+          <div className="space-y-4">
+            {conditions.map((cond) => (
+              <label key={cond} className="flex items-center cursor-pointer group">
+                <div className="relative flex items-center">
+                  <input 
+                    type="checkbox" 
+                    className="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded bg-gray-100 checked:bg-(--green-color) checked:border-(--green-color) transition-colors"
+                    checked={filters.conditions.includes(cond)}
+                    onChange={() => toggleFilter('conditions', cond)}
+                  />
+                  <svg className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                     <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                </div>
+                <span className="ml-4 text-xl font-bold text-(--black-color) group-hover:text-(--green-color) transition-colors">{cond}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-auto space-y-4">
+          <button 
+            onClick={onApply}
+            className="w-full bg-(--green-color) text-white text-xl font-bold py-4 rounded-full hover:bg-green-900 transition-colors"
+          >
+            Apply All
+          </button>
+          <button 
+            onClick={clearAll}
+            className="w-full bg-white border-2 border-(--green-color) text-(--green-color) text-xl font-bold py-4 rounded-full hover:bg-green-50 transition-colors"
+          >
+            Clear All
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+const ItemCard = ({ item }: { item: Product }) => {
+  return (
+    <div className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center group">
+      <div className="relative w-full aspect-square mb-4 bg-gray-50 rounded-xl overflow-hidden">
+        <div className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow-sm z-10">
+          {item.type === 'Donate' ? (
+             <img src="./assets/donate.png" alt="Donate" className="text-(--green-color) fill-current" width={24} height={24} />
+          ) : (
+             <img src="./assets/swap.svg" alt="Swap" className="text-(--green-color)" width={24} height={24} />
+          )}
+        </div>
+        <img 
+          src={item.image} 
+          alt={item.title} 
+          className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
+        />
+      </div>
+
+      <h3 className="text-center font-bold text-(--black-color) text-lg mb-4 line-clamp-2 h-14">
+        {item.title}
+      </h3>
+
+      {/* Need to link to Item Details page for each item when button for the item clicked */}
+      <Button variant="primary" className="w-full text-sm py-2">
+        View Details
+      </Button>
+    </div>
+  );
+};
+
+const ExplorePage: React.FC = () => {
+  const [items, setItems] = useState<Product[]>([]);
+  const [displayedItems, setDisplayedItems] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 16;
+
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<'All' | 'Donate' | 'Swap'>('All');
+  const [filters, setFilters] = useState<FilterState>({ categories: [], conditions: [] });
+  const [appliedFilters, setAppliedFilters] = useState<FilterState>({ categories: [], conditions: [] });
+
+  useEffect(() => {
+    setIsLoading(true);
+    
+    // Filter the entire database
+    let filteredData = MOCK_DATABASE.filter(item => {
+      // Search Filter
+      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
+      // Tab Filter
+      const matchesTab = activeTab === 'All' || item.type === activeTab;
+      // Category Filter (if any selected)
+      const matchesCategory = appliedFilters.categories.length === 0 || appliedFilters.categories.includes(item.category);
+      // Condition Filter (if any selected)
+      const matchesCondition = appliedFilters.conditions.length === 0 || appliedFilters.conditions.includes(item.condition);
+
+      return matchesSearch && matchesTab && matchesCategory && matchesCondition;
+    });
+
+    setItems(filteredData);
+    setPage(1); // Reset to page 1 on new filter
+    
+    // Initial Load for Page 1
+    setTimeout(() => {
+      setDisplayedItems(filteredData.slice(0, itemsPerPage));
+      setIsLoading(false);
+    }, 500);
+
+  }, [searchQuery, activeTab, appliedFilters]);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    const startIndex = (nextPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const newBatch = items.slice(startIndex, endIndex);
+    
+    setDisplayedItems(prev => [...prev, ...newBatch]);
+    setPage(nextPage);
+  };
+
+  const handleApplyFilters = () => {
+    setAppliedFilters(filters);
+    setIsFilterOpen(false);
+  };
+
+  return (
+    <main className="min-h-screen">
+
+      <Header />
+      
+      {/* Hero Section */}
+      <div className="relative h-64 md:h-80 w-full overflow-hidden">
+        <img 
+          src="./assets/bg_hand.jpg"
+          alt="Explore Banner" 
+          className="absolute inset-0 w-full h-full object-cover z-0"
+        />
+        
+        <div className="absolute inset-0 bg-(--green-color)/40 flex flex-col items-center justify-center text-center px-4">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-md">Explore Items</h1>
+          <p className="text-white text-lg md:text-xl font-medium drop-shadow-sm">Find items to swap, donate, or discover</p>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
+        
+        {/* Search & Filter Bar */}
+        <div className="flex gap-4 mb-8">
+          <div className="relative grow bg-white rounded-full">
+            <img src="./assets/search_icon.svg" alt="Search Icon" className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" width={20} height={20} />
+            <input 
+              type="text" 
+              placeholder="Search for items..." 
+              className="w-full py-4 pl-16 pr-6 rounded-full shadow-sm border-none focus:ring-2 focus:ring-(--green-color) text-lg text-(--black-color) placeholder-(--light-grey-color)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <button 
+            onClick={() => setIsFilterOpen(true)}
+            className="bg-white p-4 rounded-full shadow-sm hover:bg-gray-50 text-(--black-color)"
+          >
+            <img src="./assets/explore/menu_icon.svg" alt="Menu Icon" width={28} height={28} />
+          </button>
+        </div>
+
+        {/* Tabs */}
+        <div className="flex flex-wrap justify-center gap-6 mb-12">
+          <Button variant="filter" active={activeTab === 'All'} onClick={() => setActiveTab('All')}>
+             All
+          </Button>
+          <Button variant="filter" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
+             <img src="./assets/donate.png" alt="Donate Icon" className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} width={24} height={24} />
+             Donate
+          </Button>
+          <Button variant="filter" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
+             <img src="./assets/swap.svg" alt="Swap Icon" className={activeTab === 'Swap' ? "" : "text-(--green-color)"} width={24} height={24} />
+             Swap
+          </Button>
+        </div>
+
+        {/* Product Grid */}
+        {isLoading && page === 1 ? (
+          <div className="text-center py-20 text-gray-500">Loading items...</div>
+        ) : displayedItems.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+            {displayedItems.map((item) => (
+              <ItemCard key={item.id} item={item} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-xl text-gray-600 font-bold">No items found.</p>
+            <p className="text-gray-500">Try adjusting your filters or search terms.</p>
+          </div>
+        )}
+
+        {/* Load More Button */}
+        {displayedItems.length < items.length && (
+          <div className="text-center pb-12">
+            <button 
+              onClick={handleLoadMore}
+              className="text-(--black-color) text-lg font-medium border-b-2 border-(--black-color) hover:text-(--green-color) hover:border-(--green-color) transition-colors pb-1"
+            >
+              Load More
+            </button>
+          </div>
+        )}
+
+      </div>
+
+      {/* Filter Sidebar Modal */}
+      <FilterSidebar 
+        isOpen={isFilterOpen} 
+        onClose={() => setIsFilterOpen(false)} 
+        filters={filters}
+        setFilters={setFilters}
+        onApply={handleApplyFilters}
+      />
+
+      <Footer />
+
+    </main>
+  );
+}
+
+export default ExplorePage;
