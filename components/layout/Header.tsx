@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+// 1. Import Image component
+import Image from 'next/image';
 
 const navLinks = [
     { name: 'Home', href: '/' },
@@ -15,15 +17,29 @@ export default function Header() {
     const pathname = usePathname();
 
     return (
-        // CHANGED: 'fixed' -> 'sticky'
         // 'sticky' keeps the nav at the top but reserves space for it so content isn't hidden
         <header className="sticky top-0 z-50 bg-white shadow-md border-b border-green-100 w-full">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 
-                {/* Logo & Brand */}
-                <Link href="/" className="flex items-center space-x-2">
-                    <div className="text-2xl text-green-700 font-extrabold">🌿</div> 
-                    <span className="text-xl font-bold text-green-800 hidden sm:block">EcoSwap</span>
+                {/* 2. CHANGED: Logo & Brand Section */}
+                <Link href="/" className="flex items-center gap-3">
+                    {/* Image Container */}
+                    <div className="relative w-10 h-10 shrink-0">
+                        <Image 
+                            src="/ecoswap.png" 
+                            alt="EcoSwap Logo" 
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                    
+                    {/* Text Container - Flex Column for vertical stacking */}
+                    {/* Kept 'hidden sm:flex' so it hides on very small screens, matching previous behavior */}
+                    <div className="hidden sm:flex flex-col justify-center leading-none">
+                        <span className="text-xl font-extrabold text-green-900 leading-tight">EcoSwap</span>
+                        <span className="text-[10px] font-bold text-gray-700 tracking-wider uppercase">Sustainable item exchange</span>
+                    </div>
                 </Link>
 
                 {/* Main Navigation Links */}
