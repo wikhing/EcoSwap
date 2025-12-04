@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={rubik.className}>
         {children}
-        <link rel="icon" href="/assets/ecoswap_icon.jpg" sizes="any"/>
+        <link className="bg-transparent bg-cover" rel="icon" href="app/ecoswap_icon_removebg.ico" sizes="any"/>
       </body>
     </html>
   );
