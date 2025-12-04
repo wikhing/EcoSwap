@@ -35,26 +35,32 @@ const Header: React.FC = () => {
             <div className={`flex flex-col transition-height duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-80' : 'max-h-0'} lg:w-full lg:max-h-none lg:flex-row lg:justify-end`}>
                 <div className="pl-6 self-start lg:m-auto">
                     <nav className="flex flex-col py-2 space-x-10 space-y-2 lg:flex-row lg:pl-0 lg:justify-self-center">
-                        <a className="font-bold lg:my-0" href="home" onClick={() => handleRouting("home")}>Home</a>
-                        <a className="font-bold lg:my-0" href="explore" onClick={() => handleRouting("explore")}>Explore</a>
-                        <a className="font-bold lg:my-0" href="share" onClick={() => handleRouting("share")}>Share</a>
-                        <a className="font-bold lg:my-0" href="impact" onClick={() => handleRouting("impact")}>Impact</a>
-                        <a className="font-bold lg:my-0" href="community" onClick={() => handleRouting("community")}>Community</a>
+                        <a className="font-bold lg:my-0" href="home">Home</a>
+                        <a className="font-bold lg:my-0" href="explore">Explore</a>
+                        <a className="font-bold lg:my-0" href="share">Share</a>
+                        <a className="font-bold lg:my-0" href="impact">Impact</a>
+                        <a className="font-bold lg:my-0" href="community">Community</a>
                     </nav>
                 </div>
                 <div className="pl-6 self-start">
                     <nav className="flex flex-col py-2 space-x-6 space-y-2 lg:flex-row lg:pl-0">
                         <a className="w-28 h-fit text-center text-(--green-color) font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-white" 
                             href="login" 
-                            onClick={() => handleRouting("login")}
                         >
                             Login
                         </a>
                         <a className="w-28 h-fit text-center text-white font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-(--green-color)" 
                             href="signup" 
-                            onClick={() => handleRouting("signup")}
                         >
                             Sign Up
+                        </a>
+
+                        {/* check user authentication status(loggedIn?) to show/hide notification and profile icons */}
+                        <a className="hidden" href="notification">
+                            <img src="/assets/notification_icon.svg" alt="Notification" />
+                        </a>
+                        <a className="hidden" href="profile">
+                            <img src="/assets/profile_icon.svg" alt="Profile" />
                         </a>
                     </nav>
                 </div>

@@ -9,6 +9,8 @@
   --black-color: #333333;
   --green-color: #085209;
   --white-color: #FFFFFF;
+  --light-grey-color: #33333380;
+  --dark-grey-color: #666666;
 }
 
 html[data-theme="inline"] {
@@ -22,4 +24,13 @@ body {
   color: var(--foreground);
   font-family: var(--font-rubik);
   color: var(--black-color);
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
