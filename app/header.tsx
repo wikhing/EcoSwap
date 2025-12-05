@@ -1,0 +1,75 @@
+'use client'
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+
+
+const Header: React.FC = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const router = useRouter();
+
+    const handleRouting = (sectionId: string) => {
+        router.push('/' + sectionId);
+    };
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <header className="bg-white px-6 py-4 w-full z-10 top-0 left-0 lg:flex lg:flex-row lg:justify-between lg:items-center">
+            <div className="flex flex-wrap flex-row max-w-full">
+                <a href="#landing" onClick={() => handleRouting("")} className="flex items-center no-underline" >
+                    <img src="/assets/ecoswap_logo.jpg" alt="EcoSwap Logo" className="ml-3 mr-3 h-12 lg:h-12"/>
+                </a>
+                <button onClick={toggleMenu} className="lg:hidden ml-auto" title="Toggle Menu">
+                    <svg className="h-6 w-6 fill-current text-black" viewBox="0 0 24 24">
+                        <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M4 5h16a1 1 0 010 2H4a1 1 0 110-2zm0 6h16a1 1 0 010 2H4a1 1 0 110-2zm0 6h16a1 1 0 010 2H4a1 1 0 110-2z"
+                        />
+                    </svg>
+                </button>
+            </div>
+            <div className={`flex flex-col transition-height duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-80' : 'max-h-0'} lg:w-full lg:max-h-none lg:flex-row lg:justify-end`}>
+                <div className="pl-6 self-start lg:m-auto">
+                    <nav className="flex flex-col py-2 space-x-10 space-y-2 lg:flex-row lg:pl-0 lg:justify-self-center">
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="home">Home</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="explore">Explore</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="share">Share</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="impact">Impact</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="community">Community</a>
+                    </nav>
+                </div>
+                <div className="pl-6 self-start">
+                    <nav className="flex flex-col py-2 space-x-6 space-y-2 lg:flex-row lg:pl-0">
+                        <a className="w-28 h-fit text-center text-(--green-color) font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-white" 
+                            href="login" 
+                        >
+                            Login
+                        </a>
+                        <a className="w-28 h-fit text-center text-white font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-(--green-color)" 
+                            href="signup" 
+                        >
+                            Sign Up
+                        </a>
+
+                        {/* check user authentication status(loggedIn?) to show/hide notification and profile icons */}
+                        <a className="hidden" href="notification">
+                            <img src="/assets/notification_icon.svg" alt="Notification" />
+                        </a>
+                        <a className="hidden" href="profile">
+                            <img src="/assets/profile_icon.svg" alt="Profile" />
+                        </a>
+                    </nav>
+                </div>
+            </div>
+            
+            
+            
+        </header>
+    );
+}
+
+export default Header;

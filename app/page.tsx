@@ -1,9 +1,9 @@
-// Inside app/page.tsx
-
-// 🛑 DELETE: import { fetchFeaturedItems, fetchGlobalStats, getUserIdFromSession } from '@/lib/data';
-
 import Link from 'next/link';
-// Placeholder components (must be created in components/home/)
+import Image from "next/image";
+import React from "react";
+import Header from "./header";
+import Landing from "./landing";
+
 const FeaturedItems = ({ items }: any) => <div className="grid grid-cols-2 md:grid-cols-4 gap-4">{items.map((item: any) => <div key={item.id} className="bg-white p-4 rounded shadow">Item: {item.title}</div>)}</div>;
 const QuickStats = ({ stats }: any) => <div className="grid grid-cols-3 gap-6 text-center">{Object.keys(stats).map((key) => <div key={key} className="bg-white p-4 rounded shadow"><p className="text-xl font-bold">{stats[key]}</p><p className="text-sm">{key}</p></div>)}</div>;
 
@@ -22,7 +22,10 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pt-16"> 
-            
+            <Header />
+        
+            <Landing />
+        
             <div className="bg-green-700 text-white py-16 mb-8 text-center" style={{ backgroundImage: 'url(/images/home-hero.jpg)', backgroundSize: 'cover' }}>
                 <div className="max-w-4xl mx-auto px-4">
                     <h1 className="text-4xl font-extrabold mb-3">
@@ -58,3 +61,5 @@ export default function HomePage() {
         </div>
     );
 }
+
+export default Home;
