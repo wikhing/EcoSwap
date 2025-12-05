@@ -2,7 +2,7 @@ import React from 'react';
 import Footer from './footer';
 
 
-const Hero: React.FC = () => {
+const HeroLanding: React.FC = () => {
   return (
     <div className="relative w-full">
       {/* Background Image Container */}
@@ -151,7 +151,7 @@ const Impact: React.FC = () => {
 export default function Landing() {
   return (
     <div >
-      <Hero />
+      <HeroLanding />
       <Banner />
       <HowItWorks />
       <Impact />

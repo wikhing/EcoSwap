@@ -273,6 +273,7 @@ const ExplorePage: React.FC = () => {
       <Header />
       
       {/* Hero Section */}
+      {/* Might modulize this later cause got other page uses this */}
       <div className="relative h-64 md:h-80 w-full overflow-hidden inset-0 bg-black/30 backdrop-blur-sm z-10 bg-[url('/assets/bg_hand.jpg')] bg-cover bg-center">
         <div className='w-full h-full bg-[#1B5E20CC]'/>
         <div className="absolute inset-0 bg-(--green-color)/40 flex flex-col items-center justify-center text-center px-4">
