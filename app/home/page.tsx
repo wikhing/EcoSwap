@@ -1,10 +1,8 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import Header from '../header';
-import Footer from '../footer';
 import { useRouter } from 'next/navigation';
-
+import { Search, Sprout, Recycle } from 'lucide-react';
 
 // Todo: line-111, line-128-130
 
@@ -91,9 +89,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => (
     <div className="relative h-48 w-full p-4">
       <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm z-10">
         {product.type === 'Donate' ? (
-          <img src="/assets/donate.png" alt='Donate' width={24} height={24} className="text-(--green-color) fill-current" />
+          <Sprout size={24} className="text-(--green-color) fill-current" />
         ) : (
-          <img src="/assets/swap.svg" alt='Swap' width={24} height={24} className="text-(--green-color) fill-current" />
+          <Recycle size={24} className="text-(--green-color) fill-current" />
         )}
       </div>
       <img 
@@ -134,98 +132,94 @@ export default function HomePage() {
     }, [router]);
 
     return (
-        <main>
-            <Header />
-            <div className="min-h-screen p-6 md:p-12 font-sans">
-                <div className="max-w-7xl mx-auto">
-                
-                {/* Header Section */}
-                <div className="text-center mb-10">
-                    <h1 className="text-3xl md:text-5xl font-extrabold text-(--green-color) mb-2">
-                        Welcome back, Jason!
-                    </h1>
-                    <p className="text-(--dark-grey-color) text-lg mb-8">
-                        Here's what's happening today on EcoSwap.
-                    </p>
-
-                    {/* Search Bar */}
-                    <div className="max-w-3xl mx-auto relative bg-white rounded-full ">
-                        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                            <img src="/assets/search_icon.svg" alt="Search" className="text-(--light-grey-color)" width={20} height={20} />
-                        </div>
-                        <input 
-                            type="text" 
-                            placeholder="Search for items, categories, or users..." 
-                            className="w-full py-4 pl-12 pr-4 rounded-full border-none shadow-sm focus:ring-2 focus:ring-[--green-color] text-(--black-color) placeholder-(--light-grey-color) outline-none"
-                        />
-                        </div>
-                    </div>
-
-                    {/* Stats Section */}
-                    <div className="mb-12">
-                        <div className="flex justify-between items-end mb-6">
-                            <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color)">Your Eco Journey</h2>
-                            <a href="/impact" className="text-(--black-color) font-medium underline hover:text-(--green-color)">View Full Impact</a>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <StatCard 
-                                label="CO₂ Saved Today" 
-                                value="0.5 kg" 
-                                subtext="↑ +15% from yesterday" 
-                                accentColor="bg-green-500" 
-                            />
-                            <StatCard 
-                                label="Total CO₂ Saved" 
-                                value="12.5 kg" 
-                                subtext="Equivalent to 6 trees planted" 
-                                accentColor="bg-blue-400" 
-                            />
-                            <StatCard 
-                                label="Items donated" 
-                                value="8" 
-                                subtext="3 Donated, 5 Swapped" 
-                                accentColor="bg-orange-400" 
-                            />
-                            <StatCard 
-                                label="Community Score" 
-                                value="450" 
-                                subtext="Green Points Earned" 
-                                accentColor="bg-yellow-400" 
-                            />
-                        </div>
-                    </div>
-
-                    {/* Recommended Section */}
-                    <div className="mb-12">
-                        <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color) mb-6">Recommended For You</h2>
-                        <div className="flex overflow-x-auto gap-6 pb-6 snap-x scroll-smooth scrollbar-hide">
-                            {recommendedProducts.map(product => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Trending Section */}
-                    <div className="mb-16">
-                        <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color) mb-6">Trending Now</h2>
-                        <div className="flex overflow-x-auto gap-6 pb-6 snap-x scroll-smooth scrollbar-hide">
-                            {trendingProducts.map(product => (
-                                <ProductCard key={product.id} product={product} />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Banner Section */}
-                    <div className="w-full h-full md:h-70 lg:h-100 rounded-2xl overflow-hidden relative shadow-sm">
-                        <img 
-                            src="/assets/banner.png"
-                            alt="Eco Impact Banner"
-                            className="w-full h-full object-cover absolute inset-0"
-                        />
-                    </div>
-                </div>
-            </div>
-            <Footer />
-        </main>
+      <div className="min-h-screen p-6 md:p-12 font-sans">
+          <div className="max-w-7xl mx-auto">
+          
+          {/* Header Section */}
+          <div className="text-center mb-10">
+              <h1 className="text-3xl md:text-5xl font-extrabold text-(--green-color) mb-2">
+                  Welcome back, Jason!
+              </h1>
+              <p className="text-(--dark-grey-color) text-lg mb-8">
+                  Here's what's happening today on EcoSwap.
+              </p>
+  
+              {/* Search Bar */}
+              <div className="max-w-3xl mx-auto relative bg-white rounded-full ">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                      <Search className="text-(--light-grey-color)" size={20} />
+                  </div>
+                  <input 
+                      type="text" 
+                      placeholder="Search for items, categories, or users..." 
+                      className="w-full py-4 pl-12 pr-4 rounded-full border-none shadow-sm focus:ring-2 focus:ring-[--green-color] text-(--black-color) placeholder-(--light-grey-color) outline-none"
+                  />
+                  </div>
+              </div>
+  
+              {/* Stats Section */}
+              <div className="mb-12">
+                  <div className="flex justify-between items-end mb-6">
+                      <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color)">Your Eco Journey</h2>
+                      <a href="/impact" className="text-(--black-color) font-medium underline hover:text-(--green-color)">View Full Impact</a>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      <StatCard 
+                          label="CO₂ Saved Today" 
+                          value="0.5 kg" 
+                          subtext="↑ +15% from yesterday" 
+                          accentColor="bg-green-500" 
+                      />
+                      <StatCard 
+                          label="Total CO₂ Saved" 
+                          value="12.5 kg" 
+                          subtext="Equivalent to 6 trees planted" 
+                          accentColor="bg-blue-400" 
+                      />
+                      <StatCard 
+                          label="Items donated" 
+                          value="8" 
+                          subtext="3 Donated, 5 Swapped" 
+                          accentColor="bg-orange-400" 
+                      />
+                      <StatCard 
+                          label="Community Score" 
+                          value="450" 
+                          subtext="Green Points Earned" 
+                          accentColor="bg-yellow-400" 
+                      />
+                  </div>
+              </div>
+  
+              {/* Recommended Section */}
+              <div className="mb-12">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color) mb-6">Recommended For You</h2>
+                  <div className="flex overflow-x-auto gap-6 pb-6 snap-x scroll-smooth scrollbar-hide">
+                      {recommendedProducts.map(product => (
+                          <ProductCard key={product.id} product={product} />
+                      ))}
+                  </div>
+              </div>
+                    
+              {/* Trending Section */}
+              <div className="mb-16">
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color) mb-6">Trending Now</h2>
+                  <div className="flex overflow-x-auto gap-6 pb-6 snap-x scroll-smooth scrollbar-hide">
+                      {trendingProducts.map(product => (
+                          <ProductCard key={product.id} product={product} />
+                      ))}
+                  </div>
+              </div>
+                    
+              {/* Banner Section */}
+              <div className="w-full h-full md:h-70 lg:h-100 rounded-2xl overflow-hidden relative shadow-sm">
+                  <img 
+                      src="/assets/banner.png"
+                      alt="Eco Impact Banner"
+                      className="w-full h-full object-cover absolute inset-0"
+                  />
+              </div>
+          </div>
+      </div>
     );
 }

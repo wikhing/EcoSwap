@@ -43,13 +43,13 @@ export default function ProfilePage() {
   ];
 
   const badges = [
-    { id: 1, title: "First Donation", icon: <Recycle className="w-6 h-6 text-green-600" /> },
-    { id: 2, title: "Eco Starter", icon: <Sprout className="w-6 h-6 text-green-600" /> },
-    { id: 3, title: "Zero Waste Hero", icon: <Trophy className="w-6 h-6 text-yellow-500" /> },
+    { id: 1, title: "First Donation", icon: <Recycle className="w-6 h-6 text-(--green-color)" />, received: true },
+    { id: 2, title: "Eco Starter", icon: <Sprout className="w-6 h-6 text-(--green-color)" />, received: true },
+    { id: 3, title: "Zero Waste Hero", icon: <Trophy className="w-6 h-6 text-yellow-500" />, received: false },
   ];
 
   return (
-    <div className="bg-[#f4fbf4] min-h-screen py-10 px-4">
+    <div className="min-h-screen py-10 px-4">
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         
         {/* --- LEFT COLUMN: Profile Sidebar --- */}
@@ -67,26 +67,26 @@ export default function ProfilePage() {
             </div>
 
             {/* Name & Role */}
-            <h2 className="text-xl font-bold text-gray-900">{user.name}</h2>
-            <p className="text-sm text-gray-500 mb-6">{user.role}</p>
+            <h2 className="text-xl font-bold text-(--black-color)">{user.name}</h2>
+            <p className="text-sm text-(--dark-grey-color) mb-6">{user.role}</p>
 
             {/* Edit Button */}
-            <button className="w-full border border-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-50 transition text-sm mb-8">
+            <button className="w-full border border-[#CCCCCC] text-(--black-color) font-semibold py-2 rounded-lg hover:bg-gray-50 transition text-sm mb-8">
               Edit Profile
             </button>
 
             {/* Meta Info */}
             <div className="w-full space-y-4 text-left">
-              <div className="flex items-center text-gray-500 text-sm">
-                <Mail className="w-4 h-4 mr-3 text-gray-400" />
+              <div className="flex items-center text-(--dark-grey-color) text-sm">
+                <Mail className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
                 <span className="truncate">{user.email}</span>
               </div>
-              <div className="flex items-center text-gray-500 text-sm">
-                <Calendar className="w-4 h-4 mr-3 text-gray-400" />
+              <div className="flex items-center text-(--dark-grey-color) text-sm">
+                <Calendar className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
                 <span>Joined {user.joined}</span>
               </div>
-              <div className="flex items-center text-gray-500 text-sm">
-                <MapPin className="w-4 h-4 mr-3 text-gray-400" />
+              <div className="flex items-center text-(--dark-grey-color) text-sm">
+                <MapPin className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
                 <span>{user.location}</span>
               </div>
             </div>
@@ -99,10 +99,10 @@ export default function ProfilePage() {
           {/* Tabs Navigation */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-4">
              <div className="flex space-x-8 overflow-x-auto">
-                <button className="text-green-700 font-bold border-b-2 border-green-600 pb-1 whitespace-nowrap">Overview</button>
-                <button className="text-gray-500 hover:text-green-700 font-medium whitespace-nowrap">My Listings</button>
-                <button className="text-gray-500 hover:text-green-700 font-medium whitespace-nowrap">My Donations</button>
-                <button className="text-gray-500 hover:text-green-700 font-medium whitespace-nowrap">My Impact</button>
+                <button className="text-(--green-color) font-bold border-b-2 border-(--green-color) pb-1 whitespace-nowrap">Overview</button>
+                <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Listings</button>
+                <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Donations</button>
+                <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Impact</button>
              </div>
           </div>
 
@@ -110,8 +110,8 @@ export default function ProfilePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {stats.map((stat, index) => (
               <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center h-32">
-                <span className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</span>
-                <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{stat.label}</span>
+                <span className="text-3xl font-bold text-(--black-color) mb-1">{stat.value}</span>
+                <span className="text-xs font-bold text-(--dark-grey-color) uppercase tracking-wider">{stat.label}</span>
               </div>
             ))}
           </div>
@@ -119,8 +119,8 @@ export default function ProfilePage() {
           {/* Recent Listings Section */}
           <div>
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Recent Listings</h3>
-              <Link href="#" className="text-green-700 text-sm font-bold hover:underline">View All</Link>
+              <h3 className="text-lg font-bold text-(--black-color)">Recent Listings</h3>
+              <Link href="#" className="text-(--green-color) text-sm font-bold hover:underline">View All</Link>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -143,17 +143,17 @@ export default function ProfilePage() {
                   </div>
                   
                   {/* Item Details */}
-                  <div className="flex flex-col flex-grow py-1">
-                    <h4 className="font-bold text-gray-900 leading-tight mb-1">{item.title}</h4>
+                  <div className="flex flex-col grow py-1">
+                    <h4 className="font-bold text-(--black-color) leading-tight mb-1">{item.title}</h4>
                     <div className="mb-auto">
-                       <span className="bg-green-100 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
+                       <span className="bg-[#E6F0E6] text-(--green-color) text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">
                          {item.status}
                        </span>
                     </div>
                     
                     {/* Action Links */}
-                    <div className="flex space-x-4 mt-2 text-sm text-gray-500 font-medium">
-                      <button className="hover:text-green-700">Edit</button>
+                    <div className="flex space-x-4 mt-2 text-sm text-(--dark-grey-color) font-medium">
+                      <button className="hover:text-(--green-color)">Edit</button>
                       <span className="text-gray-300">|</span>
                       <button className="hover:text-red-600">Remove</button>
                     </div>
@@ -165,14 +165,14 @@ export default function ProfilePage() {
 
           {/* Achievements Section */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-6">Achievements & Badges</h3>
+            <h3 className="text-lg font-bold text-(--black-color) mb-6">Achievements & Badges</h3>
             <div className="flex flex-wrap gap-8">
               {badges.map((badge) => (
                 <div key={badge.id} className="flex flex-col items-center text-center">
-                  <div className="w-16 h-16 rounded-full border-2 border-green-100 bg-green-50 flex items-center justify-center mb-2">
+                  <div className={`w-16 h-16 rounded-full border-2 ${badge.received ? "border-(--green-color) bg-[#E6F0E6]" : "border-[#CCCCCC] border-dashed"} flex items-center justify-center mb-2 ${badge.received ? '' : 'opacity-50'}`}>
                     {badge.icon}
                   </div>
-                  <span className="text-xs font-bold text-gray-800 w-20 leading-tight">{badge.title}</span>
+                  <span className="text-xs font-bold text-(--black-color) w-20 leading-tight">{badge.title}</span>
                 </div>
               ))}
             </div>

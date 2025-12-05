@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import Footer from '../footer';
-import Header from '../header';
+import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
+import Hero from '../components/hero';
 
 
 // Todo: line-206
@@ -110,10 +110,7 @@ const FilterSidebar = ({
       <div className={`relative bg-white w-full max-w-md h-full p-8 shadow-2xl overflow-y-auto flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex justify-end mb-4">
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full" aria-label="Close filters">
-            <svg width={32} height={32} viewBox="0 0 24 24" className="text-(--black-color)" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
+            <X size={24} className="text-(--black-color)" />
           </button>
         </div>
 
@@ -187,9 +184,9 @@ const ItemCard = ({ item }: { item: Product }) => {
       <div className="relative w-full aspect-square mb-4 bg-gray-50 rounded-xl overflow-hidden">
         <div className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow-sm z-10">
           {item.type === 'Donate' ? (
-             <img src="./assets/donate.png" alt="Donate" className="text-(--green-color) fill-current" width={24} height={24} />
+             <Sprout className="text-(--green-color) fill-current" size={24} />
           ) : (
-             <img src="./assets/swap.svg" alt="Swap" className="text-(--green-color)" width={24} height={24} />
+             <Recycle className="text-(--green-color) fill-current" size={24} />
           )}
         </div>
         <img 
@@ -268,26 +265,16 @@ const ExplorePage: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen">
-
-      <Header />
+    <div className="min-h-screen">
       
-      {/* Hero Section */}
-      {/* Might modulize this later cause got other page uses this */}
-      <div className="relative h-64 md:h-80 w-full overflow-hidden inset-0 bg-black/30 backdrop-blur-sm z-10 bg-[url('/assets/bg_hand.jpg')] bg-cover bg-center">
-        <div className='w-full h-full bg-[#1B5E20CC]'/>
-        <div className="absolute inset-0 bg-(--green-color)/40 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 drop-shadow-md">Explore Items</h1>
-          <p className="text-white text-lg md:text-xl drop-shadow-sm">Find items to swap, donate, or discover</p>
-        </div>
-      </div>
+      <Hero title="Explore Items" subtitle="Find items to swap, donate, or discover" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
         
         {/* Search & Filter Bar */}
         <div className="flex gap-4 mb-8">
           <div className="relative grow bg-white rounded-full">
-            <img src="./assets/search_icon.svg" alt="Search Icon" className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" width={20} height={20} />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" size={20} />
             <input 
               type="text" 
               placeholder="Search for items..." 
@@ -299,8 +286,9 @@ const ExplorePage: React.FC = () => {
           <button 
             onClick={() => setIsFilterOpen(true)}
             className="bg-white p-4 rounded-full shadow-sm hover:bg-gray-50 text-(--black-color)"
+            aria-label='Menu'
           >
-            <img src="./assets/explore/menu_icon.svg" alt="Menu Icon" width={28} height={28} />
+            <Menu className="text-(--black-color)" size={28} />
           </button>
         </div>
 
@@ -310,11 +298,11 @@ const ExplorePage: React.FC = () => {
              All
           </Button>
           <Button variant="filter" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
-             <img src="./assets/donate.png" alt="Donate Icon" className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} width={24} height={24} />
+             <Sprout className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
              Donate
           </Button>
           <Button variant="filter" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
-             <img src="./assets/swap.svg" alt="Swap Icon" className={activeTab === 'Swap' ? "" : "text-(--green-color)"} width={24} height={24} />
+             <Recycle className={activeTab === 'Swap' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
              Swap
           </Button>
         </div>
@@ -357,10 +345,7 @@ const ExplorePage: React.FC = () => {
         setFilters={setFilters}
         onApply={handleApplyFilters}
       />
-
-      <Footer />
-
-    </main>
+    </div>
   );
 }
 

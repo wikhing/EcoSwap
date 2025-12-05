@@ -1,84 +1,97 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-// 1. Import Image component
+import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useState } from 'react';
 
 const navLinks = [
-    { name: 'Home', href: '/' },
-    { name: 'Explore', href: '/explore' },
+    { name: 'Home', href: '/home' },
+    { name: 'Explore', href: '/explore' }, 
     { name: 'Share', href: '/share' },
     { name: 'Impact', href: '/impact' },
     { name: 'Community', href: '/community' },
 ];
 
 export default function Header() { 
+    const [isOpen, setIsOpen] = useState(false);
+    
+    const router = useRouter();
+
+    const handleLogout = (sectionId: string) => {
+
+        // Logout
+
+        router.push('/' + sectionId);
+    };
+
     const pathname = usePathname();
 
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
-        // 'sticky' keeps the nav at the top but reserves space for it so content isn't hidden
-        <header className="sticky top-0 z-50 bg-white shadow-md border-b border-green-100 w-full">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                
-                {/* 2. CHANGED: Logo & Brand Section */}
-                <Link href="/" className="flex items-center gap-3">
-                    {/* Image Container */}
-                    <div className="relative w-10 h-10 shrink-0">
-                        <Image 
-                            src="/ecoswap.png" 
-                            alt="EcoSwap Logo" 
-                            fill
-                            className="object-contain"
-                            priority
-                        />
-                    </div>
-                    
-                    {/* Text Container - Flex Column for vertical stacking */}
-                    {/* Kept 'hidden sm:flex' so it hides on very small screens, matching previous behavior */}
-                    <div className="hidden sm:flex flex-col justify-center leading-none">
-                        <span className="text-xl font-extrabold text-green-900 leading-tight">EcoSwap</span>
-                        <span className="text-[10px] font-bold text-gray-700 tracking-wider uppercase">Sustainable item exchange</span>
-                    </div>
+        <header className="bg-white px-6 py-4 w-full z-10 top-0 left-0 lg:flex lg:flex-row lg:justify-between lg:items-center">
+            <div className="flex flex-wrap flex-row max-w-full">
+                <Link href="/" className="flex items-center no-underline" >
+                    <Image src="/ecoswap_logo.jpg" alt="EcoSwap Logo" width={500} height={500} className="w-full ml-3 mr-3 h-12 lg:h-12"/>
                 </Link>
-
-                {/* Main Navigation Links */}
-                <nav className="hidden md:flex space-x-6">
-                    {navLinks.map((link) => (
-                        <Link 
-                            key={link.name}
-                            href={link.href}
-                            className={`
-                                text-sm font-medium transition duration-150 py-2 border-b-2 
-                                ${pathname === link.href 
-                                    ? 'text-green-700 border-green-700 font-semibold' 
-                                    : 'text-gray-600 border-transparent hover:text-green-700 hover:border-green-300'
-                                }
-                            `}
-                        >
-                            {link.name}
-                        </Link>
-                    ))}
-                </nav>
-
-                {/* Right Side: Icons and Auth */}
-                <div className="flex items-center space-x-4">
+                <button onClick={toggleMenu} className="lg:hidden ml-auto" title="Toggle Menu">
+                    <svg className="h-6 w-6 fill-current text-black" viewBox="0 0 24 24">
+                        <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M4 5h16a1 1 0 010 2H4a1 1 0 110-2zm0 6h16a1 1 0 010 2H4a1 1 0 110-2zm0 6h16a1 1 0 010 2H4a1 1 0 110-2z"
+                        />
+                    </svg>
+                </button>
+            </div>
+            <div className={`flex flex-col ml-7 transition-height duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-80' : 'max-h-0'} lg:w-full lg:max-h-none lg:flex-row lg:justify-end`}>
+                <div className="pl-6 self-start lg:m-auto">
+                    <nav className="flex flex-col py-2 space-x-10 space-y-2 lg:flex-row lg:pl-0 lg:justify-self-center">
+                        {
+                            navLinks.map((link) => (
+                                <Link 
+                                    key={link.name} 
+                                    href={link.href}
+                                    className="font-medium text-lg lg:my-0 hover:text-(--green-color) hover:underline"
+                                >
+                                    {link.name}
+                                </Link>
+                            ))
+                        }
+                        
+                    </nav>
+                </div>
+                <div className="pl-6 self-start">
+                    {
+                        pathname !== '/profile' ?
+                        <nav className="flex flex-col py-2 space-x-6 space-y-2 lg:flex-row lg:pl-0">
+                            <Link className="w-28 h-fit text-center text-(--green-color) font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-white hover:bg-(--green-color) hover:text-white transition" 
+                                href="login" 
+                            >
+                                Login
+                            </Link>
+                            <Link className="w-28 h-fit text-center text-white font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-(--green-color) hover:bg-white hover:text-(--green-color) transition" 
+                                href="signup" 
+                            >
+                                Sign Up
+                            </Link>
                     
-                    {/* Notification Icon */}
-                    <button className="text-gray-600 hover:text-green-700 transition">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.425 6 9.296 6 12v2.158a2.032 2.032 0 01-.195.427L4 17h5m6 0a3 3 0 11-6 0m6 0v1"></path></svg>
-                    </button>
-                    
-                    {/* Profile Icon */}
-                    <Link href="/profile" className="text-gray-600 hover:text-green-700 transition">
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5.121 17.804A13.938 13.938 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    </Link>
-
-                    {/* Auth Link */}
-                    <Link href={"/login"} className="text-sm font-medium text-green-700 hover:text-red-600 transition">
-                        Sign In
-                    </Link>
-                    
+                            {/* check user authentication status(loggedIn?) to show/hide notification and profile icons */}
+                            <Link className="hidden" href="notification">
+                                <img src="/assets/notification_icon.svg" alt="Notification" />
+                            </Link>
+                            <Link className="hidden" href="profile">
+                                <img src="/assets/profile_icon.svg" alt="Profile" />
+                            </Link>
+                        </nav>
+                        :
+                        <button onClick={() => handleLogout('')} className="w-30 h-fit text-center text-(--green-color) font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-white hover:bg-(--green-color) hover:text-white transition cursor-pointer">
+                            Sign Out
+                        </button>
+                    }
                 </div>
             </div>
         </header>
