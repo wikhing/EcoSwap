@@ -35,11 +35,11 @@ const Header: React.FC = () => {
             <div className={`flex flex-col transition-height duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-80' : 'max-h-0'} lg:w-full lg:max-h-none lg:flex-row lg:justify-end`}>
                 <div className="pl-6 self-start lg:m-auto">
                     <nav className="flex flex-col py-2 space-x-10 space-y-2 lg:flex-row lg:pl-0 lg:justify-self-center">
-                        <a className="font-bold lg:my-0" href="home">Home</a>
-                        <a className="font-bold lg:my-0" href="explore">Explore</a>
-                        <a className="font-bold lg:my-0" href="share">Share</a>
-                        <a className="font-bold lg:my-0" href="impact">Impact</a>
-                        <a className="font-bold lg:my-0" href="community">Community</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="home">Home</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="explore">Explore</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="share">Share</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="impact">Impact</a>
+                        <a className="font-medium text-xl lg:my-0 hover:text-(--green-color) hover:underline" href="community">Community</a>
                     </nav>
                 </div>
                 <div className="pl-6 self-start">

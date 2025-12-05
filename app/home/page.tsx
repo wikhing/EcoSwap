@@ -5,12 +5,14 @@ import Header from '../header';
 import Footer from '../footer';
 import { useRouter } from 'next/navigation';
 
-// --- Types ---
+
+// Todo: line-111, line-128-130
+
 interface Product {
   id: number;
   title: string;
   image: string;
-  type: 'donate' | 'swap';
+  type: 'Donate' | 'Swap';
 }
 
 interface StatProps {
@@ -25,26 +27,26 @@ const recommendedProducts: Product[] = [
   {
     id: 1,
     title: "2nd Hand Introduction to Parallel Programming",
-    image: "./assets/home_mock_datas/mock_data1.png",
-    type: 'donate'
+    image: "./assets/mock_datas/mock_data1.png",
+    type: 'Donate'
   },
   {
     id: 2,
     title: "Wireless Mechanical Keyboard",
-    image: "./assets/home_mock_datas/mock_data2.png",
-    type: 'swap'
+    image: "./assets/mock_datas/mock_data2.png",
+    type: 'Swap'
   },
   {
     id: 3,
     title: "2nd Hand North Caroline Hoodie",
-    image: "./assets/home_mock_datas/mock_data3.png",
-    type: 'donate'
+    image: "./assets/mock_datas/mock_data3.png",
+    type: 'Donate'
   },
   {
     id: 4,
     title: "IKEA Desk Lamp",
-    image: "./assets/home_mock_datas/mock_data4.png",
-    type: 'swap'
+    image: "./assets/mock_datas/mock_data4.png",
+    type: 'Swap'
   }
 ];
 
@@ -52,26 +54,26 @@ const trendingProducts: Product[] = [
   {
     id: 5,
     title: "JBL Portable Bluetooth Speaker",
-    image: "./assets/home_mock_datas/mock_data5.png",
-    type: 'donate'
+    image: "./assets/mock_datas/mock_data5.png",
+    type: 'Donate'
   },
   {
     id: 6,
     title: "Stanley 40 oz Quencher",
-    image: "./assets/home_mock_datas/mock_data6.png",
-    type: 'swap'
+    image: "./assets/mock_datas/mock_data6.png",
+    type: 'Swap'
   },
   {
     id: 7,
     title: "IKEA Frakta Bag",
-    image: "./assets/home_mock_datas/mock_data7.png",
-    type: 'donate'
+    image: "./assets/mock_datas/mock_data7.png",
+    type: 'Donate'
   },
   {
     id: 8,
     title: "Heavy Duty Umbrella",
-    image: "./assets/home_mock_datas/mock_data8.png",
-    type: 'swap'
+    image: "./assets/mock_datas/mock_data8.png",
+    type: 'Swap'
   }
 ];
 
@@ -88,10 +90,10 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => (
   <div className="bg-white min-w-2xs rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col overflow-hidden group">
     <div className="relative h-48 w-full p-4">
       <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm z-10">
-        {product.type === 'donate' ? (
+        {product.type === 'Donate' ? (
           <img src="/assets/donate.png" alt='Donate' width={24} height={24} className="text-(--green-color) fill-current" />
         ) : (
-          <img src="/assets/swap.svg" alt='Recycle' width={24} height={24} className="text-(--green-color) fill-current" />
+          <img src="/assets/swap.svg" alt='Swap' width={24} height={24} className="text-(--green-color) fill-current" />
         )}
       </div>
       <img 
@@ -105,9 +107,10 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => (
       <h3 className="font-bold text-(--black-color) text-sm md:text-base leading-tight mb-4 line-clamp-2">
         {product.title}
       </h3>
-      
+
+      {/* Need to link to Item Details page for each item when button for the item clicked */}
       <div className="mt-auto">
-        <button className="bg-(--green-color) text-white text-sm font-bold py-2 px-6 rounded-full hover:bg-green-900 transition-colors w-full md:w-auto">
+        <button className="bg-(--green-color) text-white text-sm font-bold py-2 px-6 rounded-full hover:bg-white border-2 border-(--green-color) hover:text-(--green-color) transition-colors w-full md:w-auto">
           View Details
         </button>
       </div>
@@ -194,7 +197,7 @@ export default function HomePage() {
 
                     {/* Recommended Section */}
                     <div className="mb-12">
-                        <h2 className="text-2xl md:text-3xl font-extrabold text-[#085209] mb-6">Recommended For You</h2>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color) mb-6">Recommended For You</h2>
                         <div className="flex overflow-x-auto gap-6 pb-6 snap-x scroll-smooth scrollbar-hide">
                             {recommendedProducts.map(product => (
                                 <ProductCard key={product.id} product={product} />
@@ -204,7 +207,7 @@ export default function HomePage() {
 
                     {/* Trending Section */}
                     <div className="mb-16">
-                        <h2 className="text-2xl md:text-3xl font-extrabold text-[#085209] mb-6">Trending Now</h2>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-(--green-color) mb-6">Trending Now</h2>
                         <div className="flex overflow-x-auto gap-6 pb-6 snap-x scroll-smooth scrollbar-hide">
                             {trendingProducts.map(product => (
                                 <ProductCard key={product.id} product={product} />
