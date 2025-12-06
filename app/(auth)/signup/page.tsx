@@ -3,15 +3,67 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useState } from 'react';
+import Input from '../Input';
 
 export default function SignupPage() {
   const router = useRouter();
+  const [agreed, setAgreed] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    // Password Strength Regex: Min 8 chars, at least 1 letter and 1 number
+    const passwordStrengthRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
+
+    if (!formData.fullName.trim()) newErrors.fullName = "Full Name is required";
+
+    // Email Check
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    // Password Strength Check
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (!passwordStrengthRegex.test(formData.password)) {
+      newErrors.password = "Password must be 8+ chars, with at least 1 letter and 1 number";
+    }
+
+    // Confirm Password Check
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (!agreed) {
+        // You might want to show a global error or highlight the checkbox
+        alert("You must agree to the pledge");
+        return false;
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock Signup -> Redirect to Login or Home
-    router.push('/login');
-  };
+    if (validate()) {
+      console.log('Signup successful', formData);
+      
+      router.push('/home');
+    };
+  }
 
   return (
     <div 
@@ -54,34 +106,56 @@ export default function SignupPage() {
         {/* CHANGED: space-y-3 (was space-y-4) */}
         <form onSubmit={handleSignup} className="space-y-3">
           
-          <div>
-            <label className="block text-[10px] font-bold text-(--black-color) uppercase mb-1 ml-1">Full Name</label>
-            {/* CHANGED: py-2, text-sm */}
-            <input type="text" placeholder="e.g. Alexander" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-(--black-color) text-sm placeholder-[#757575] focus:ring-2 focus:ring-(--green-color) focus:bg-white outline-none" required />
-          </div>
+            <Input 
+              label="FULL NAME" 
+              id="fullName" 
+              type='text'
+              placeholder="e.g. WONG WEI LI" 
+              value={formData.fullName}
+              onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+              error={errors.fullName}
+            />
 
-          <div>
-            <label className="block text-[10px] font-bold text-(--black-color) uppercase mb-1 ml-1">Student Email</label>
-            {/* CHANGED: py-2, text-sm */}
-            <input type="email" placeholder="student@siswa.um.edu.my" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-(--black-color) text-sm placeholder-[#757575] focus:ring-2 focus:ring-(--green-color) focus:bg-white outline-none" required />
-          </div>
+            <Input 
+              label="STUDENT EMAIL" 
+              id="email" 
+              type="email" 
+              placeholder="student@um.edu.my" 
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              error={errors.email}
+            />
 
-          <div>
-            <label className="block text-[10px] font-bold text-(--black-color) uppercase mb-1 ml-1">Password</label>
-            {/* CHANGED: py-2, text-sm */}
-            <input type="password" placeholder="Create a strong password" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-(--black-color) text-sm placeholder-[#757575] focus:ring-2 focus:ring-(--green-color) focus:bg-white outline-none" required />
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold text-(--black-color) uppercase mb-1 ml-1">Confirm Password</label>
-            {/* CHANGED: py-2, text-sm */}
-            <input type="password" placeholder="Re-enter password" className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-(--black-color) text-sm placeholder-[#757575] focus:ring-2 focus:ring-(--green-color) focus:bg-white outline-none" required />
-          </div>
+            <Input 
+              label="PASSWORD" 
+              id="password" 
+              type="password" 
+              placeholder="Create a strong password" 
+              value={formData.password}
+              onChange={(e) => setFormData({...formData, password: e.target.value})}
+              error={errors.password}
+            />
+            <Input 
+              label="CONFIRM PASSWORD" 
+              id="confirmPassword" 
+              type="password" 
+              placeholder="Re-enter password" 
+              value={formData.confirmPassword}
+              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+              error={errors.confirmPassword}
+            />
 
           {/* Pledge Checkbox */}
           <div className="flex items-start gap-2 py-1">
             <div className='relative flex items-center'>
-              <input type="checkbox" id="pledge" className="peer appearance-none mt-0.5 w-3.5 h-3.5 text-(--green-color) focus:ring-(--green-color) checked:bg-(--green-color) checked:border-(--green-color) border-2 bg-gray-100 border-gray-300 rounded transition-colors" required />
+              <input
+                id="pledge"
+                type="checkbox"
+                checked={agreed}
+                onChange={(e) => setAgreed(e.target.checked)}
+                required
+                className="peer appearance-none mt-0.5 w-3.5 h-3.5 text-(--green-color) focus:ring-(--green-color) checked:bg-(--green-color) checked:border-(--green-color) border-2 bg-gray-100 border-gray-300 rounded transition-colors"
+              />
               <svg className="absolute w-1.5 h-1.5 text-white pointer-events-none hidden peer-checked:block left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12"></polyline>
               </svg>

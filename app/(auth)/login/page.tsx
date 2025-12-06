@@ -3,18 +3,49 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Input from '../Input';
 
 export default function LoginPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+
+  const validate = () => {
+    const newErrors: { email?: string; password?: string } = {};
+    
+    // Email Validation Regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    } else if (!formData.email.endsWith('um.edu.my')) {
+       // Optional: Specific check for UM students based on your context
+       // newErrors.email = 'Please use your student email (@um.edu.my)';
+    }
+
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   // MOCK LOGIN: Just redirects to Home
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setTimeout(() => {
-      router.push('/');
-    }, 1000);
+    if (validate()) {
+      console.log('Login successful', formData);
+      // Proceed with login logic
+    
+      setIsLoading(true);
+      setTimeout(() => {
+        router.push('/');
+      }, 1000);
+    }
   };
 
   const handleGuestSignIn = () => {
@@ -46,32 +77,28 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-4">
           
           {/* Email */}
-          <div>
-            <label className="block text-[10px] font-bold text-(--dark-grey-color) uppercase mb-1 ml-1">
-              Email Address
-            </label>
-            {/* CHANGED: py-2 (shorter input), text-sm */}
-            <input 
-              type="email" 
-              placeholder="student@um.edu.my"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-(--black-color) text-sm focus:outline-none focus:ring-2 focus:ring-(--green-color) focus:bg-white transition"
-              required 
-            />
-          </div>
+          <Input 
+            label="EMAIL ADDRESS" 
+            id="loginEmail" 
+            type="email" 
+            placeholder="student@um.edu.my"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            error={errors.email}
+          />
 
           {/* Password */}
           <div>
-            <label className="block text-[10px] font-bold text-(--dark-grey-color) uppercase mb-1 ml-1">
-              Password
-            </label>
-            {/* CHANGED: py-2 (shorter input), text-sm */}
-            <input 
+            <Input 
+              label="PASSWORD" 
+              id="loginPassword" 
               type="password" 
-              placeholder="Enter your password"
-              className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-(--black-color) text-sm focus:outline-none focus:ring-2 focus:ring-(--green-color) focus:bg-white transition"
-              required 
+              placeholder="Enter your password" 
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              error={errors.password}
             />
-            <div className="text-right mt-1.5">
+            <div className="text-right">
               <Link href="#" className="text-[10px] font-semibold text-(--green-color) hover:text-green-700 transition">
                 Forgot Password?
               </Link>
