@@ -1,16 +1,19 @@
 import React from 'react';
-import Footer from './footer';
-
+import Image from 'next/image';
+import Link from 'next/link';
+import { Sprout, RefreshCw, Users } from 'lucide-react';
 
 const HeroLanding: React.FC = () => {
   return (
     <div className="relative w-full">
       {/* Background Image Container */}
       <div className="h-[50dvh] lg:h-screen w-full relative">
-        <img 
+        <Image 
           src="/assets/landing/hero.png" 
           alt="Green Hills" 
           className="w-full h-full object-cover"
+          width={1000}
+          height={500}
         />
         {/* Overlay Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-white/10 backdrop-blur-[1px]">
@@ -20,9 +23,9 @@ const HeroLanding: React.FC = () => {
           <p className="text-xl lg:text-2xl text-(--black-color) mt-6 max-w-2xl font-medium">
             Swap, donate, or find pre-loved items — reduce waste and help the planet.
           </p>
-          <a href="signup" className="px-8 py-3 mt-16 bg-white text-3xl text-(--green-color) font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+          <Link href="/signup" className="px-8 py-3 mt-16 bg-white text-3xl text-(--green-color) font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform">
             Begin your Reuse Journey
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -31,12 +34,16 @@ const HeroLanding: React.FC = () => {
 
 const Banner: React.FC = () => {
   return (
-    <div className="w-full h-[50dvh] overflow-hidden">
-      <img 
+    <div className="w-full h-[50dvh] lg:h-screen overflow-hidden">
+      <Image
+        width={1000}
+        height={500}
         src="/assets/landing/middle_section.jpg" 
         alt="Sustainable Items" 
         className="w-full h-full object-cover object-center opacity-90"
       />
+
+      {/* Animation Text Go In */}
     </div>
   );
 };
@@ -117,7 +124,7 @@ const Impact: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
           {/* Stat 1 */}
           <div className="flex flex-col items-center">
-            <img src="/assets/donate.png" alt="CO2 Reduced" className="w-20 h-20 text-lime-500 fill-current mb-4 drop-shadow-md" />
+            <Sprout size={80} className="text-lime-500 fill-current mb-4 drop-shadow-md" />
             <h3 className="text-2xl font-bold text-(--black-color)">5 kg</h3>
             <h4 className="text-xl font-bold text-(--black-color) mb-2">CO₂ Reduced</h4>
             <p className="text-(--black-color) font-medium">equivalent to<br/>planting 2 trees</p>
@@ -125,7 +132,7 @@ const Impact: React.FC = () => {
 
           {/* Stat 2 */}
           <div className="flex flex-col items-center">
-            <img src="/assets/landing/landing_icon1.png" alt="Items Reused" className="w-20 h-20 text-blue-400 mb-4 drop-shadow-md" />
+            <RefreshCw size={80} className="text-blue-400 fill-current mb-4 drop-shadow-md" />
             <h3 className="text-2xl font-bold text-(--black-color)">10</h3>
             <h4 className="text-xl font-bold text-(--black-color) mb-2">Items Reused</h4>
             <p className="text-(--black-color) font-medium">making campus<br/>life greener</p>
@@ -133,16 +140,16 @@ const Impact: React.FC = () => {
 
           {/* Stat 3 */}
           <div className="flex flex-col items-center">
-            <img src="/assets/landing/landing_icon2.png" alt="Active Students" className="w-20 h-20 text-blue-600 fill-current mb-4 drop-shadow-md" />
+            <Users size={80} className="text-blue-600 fill-current mb-4 drop-shadow-md" />
             <h3 className="text-2xl font-bold text-(--black-color)">100</h3>
             <h4 className="text-xl font-bold text-(--black-color) mb-2">Active Student</h4>
             <p className="text-(--black-color) font-medium">helping each<br/>other & planet</p>
           </div>
         </div>
 
-        <a href="signup" className="px-8 py-3 bg-(--green-color) text-white font-bold rounded-full shadow-lg hover:bg-green-800 transition">
+        <Link href="/signup" className="px-8 py-3 bg-(--green-color) text-white font-bold rounded-full shadow-lg hover:bg-green-800 transition">
           Make Your First Impact Today
-        </a>
+        </Link>
       </div>
     </section>
   );
@@ -155,7 +162,6 @@ export default function Landing() {
       <Banner />
       <HowItWorks />
       <Impact />
-      <Footer />
     </div>
   );
 }
