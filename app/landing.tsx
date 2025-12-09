@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import { Sprout, RefreshCw, Users, Menu, X } from 'lucide-react';
-import { SP } from 'next/dist/shared/lib/utils';
+import Link from 'next/link';
+import { Sprout, RefreshCw, Users } from 'lucide-react';
 
 const HeroLanding: React.FC = () => {
   return (
@@ -23,9 +23,9 @@ const HeroLanding: React.FC = () => {
           <p className="text-xl lg:text-2xl text-(--black-color) mt-6 max-w-2xl font-medium">
             Swap, donate, or find pre-loved items — reduce waste and help the planet.
           </p>
-          <a href="signup" className="px-8 py-3 mt-16 bg-white text-3xl text-(--green-color) font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+          <Link href="/signup" className="px-8 py-3 mt-16 bg-white text-3xl text-(--green-color) font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform">
             Begin your Reuse Journey
-          </a>
+          </Link>
         </div>
       </div>
     </div>
@@ -147,9 +147,9 @@ const Impact: React.FC = () => {
           </div>
         </div>
 
-        <a href="signup" className="px-8 py-3 bg-(--green-color) text-white font-bold rounded-full shadow-lg hover:bg-green-800 transition">
+        <Link href="/signup" className="px-8 py-3 bg-(--green-color) text-white font-bold rounded-full shadow-lg hover:bg-green-800 transition">
           Make Your First Impact Today
-        </a>
+        </Link>
       </div>
     </section>
   );

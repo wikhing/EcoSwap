@@ -3,18 +3,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
 import Hero from '../components/hero';
-
-
-// Todo: line-206
-
+import ProductCard from '../components/productCards';
 
 interface Product {
   id: number;
   title: string;
-  image: string;
+  images: string[];
   type: 'Donate' | 'Swap';
-  category: string;
-  condition: string;
+  category?: string;
+  condition?: string;
 }
 
 interface FilterState {
@@ -23,27 +20,27 @@ interface FilterState {
 }
 
 const MOCK_DATABASE: Product[] = [
-  { id: 1, title: "Stanley 40 oz Quencher Mist", image: "./assets/mock_datas/mock_data1.png", type: "Swap", category: "Home Goods", condition: "Good" },
-  { id: 2, title: "JBL Portable Bluetooth Speaker", image: "./assets/mock_datas/mock_data2.png", type: "Donate", category: "Electronics", condition: "Used" },
-  { id: 3, title: "2nd Hand Introduction to Parallel Programming", image: "./assets/mock_datas/mock_data3.png", type: "Donate", category: "Books", condition: "Good" },
-  { id: 4, title: "IKEA Desk Lamp", image: "./assets/mock_datas/mock_data4.png", type: "Swap", category: "Home Goods", condition: "Liked New" },
-  { id: 5, title: "One Life Graphic T-shirt", image: "./assets/mock_datas/mock_data5.png", type: "Swap", category: "Clothing", condition: "Used" },
-  { id: 6, title: "Wireless Mechanic Keyboard", image: "./assets/mock_datas/mock_data6.png", type: "Swap", category: "Electronics", condition: "Liked New" },
-  { id: 7, title: "2nd Hand North Carolina Hoodie", image: "./assets/mock_datas/mock_data7.png", type: "Donate", category: "Clothing", condition: "Good" },
-  { id: 8, title: "IKEA Frakta Bag", image: "./assets/mock_datas/mock_data8.png", type: "Donate", category: "Others", condition: "Good" },
-  { id: 9, title: "Stanley 40 oz Quencher Mist", image: "./assets/mock_datas/mock_data9.png", type: "Swap", category: "Others", condition: "Used" },
-  { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", image: "./assets/mock_datas/mock_data10.png", type: "Donate", category: "Books", condition: "Good" },
-  { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", image: "./assets/mock_datas/mock_data11.png", type: "Swap", category: "Others", condition: "Liked New" },
-  { id: 12, title: "Tote Bag Oura Matcha", image: "./assets/mock_datas/mock_data12.png", type: "Donate", category: "Clothing", condition: "Good" },
-  { id: 13, title: "Rainbow Sticky Note Cube", image: "./assets/mock_datas/mock_data13.png", type: "Donate", category: "Stationery", condition: "Liked New" },
-  { id: 14, title: "Wireless Bluetooth Headphones", image: "./assets/mock_datas/mock_data14.png", type: "Swap", category: "Electronics", condition: "Good" },
-  { id: 15, title: "2nd Hand Muji Desk Organiser", image: "./assets/mock_datas/mock_data15.png", type: "Donate", category: "Home Goods", condition: "Used" },
-  { id: 16, title: "2nd Hand Baseball Cap", image: "./assets/mock_datas/mock_data16.png", type: "Swap", category: "Clothing", condition: "Used" },
+  { id: 1, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Home Goods", condition: "Good" },
+  { id: 2, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Electronics", condition: "Used" },
+  { id: 3, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Books", condition: "Good" },
+  { id: 4, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Liked New" },
+  { id: 5, title: "One Life Graphic T-shirt", images: ["./assets/mock_datas/mock_data5.png"], type: "Swap", category: "Clothing", condition: "Used" },
+  { id: 6, title: "Wireless Mechanic Keyboard", images: ["./assets/mock_datas/mock_data6.png"], type: "Swap", category: "Electronics", condition: "Liked New" },
+  { id: 7, title: "2nd Hand North Carolina Hoodie", images: ["./assets/mock_datas/mock_data7.png"], type: "Donate", category: "Clothing", condition: "Good" },
+  { id: 8, title: "IKEA Frakta Bag", images: ["./assets/mock_datas/mock_data8.png"], type: "Donate", category: "Others", condition: "Good" },
+  { id: 9, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data9.png"], type: "Swap", category: "Others", condition: "Used" },
+  { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", images: ["./assets/mock_datas/mock_data10.png"], type: "Donate", category: "Books", condition: "Good" },
+  { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", images: ["./assets/mock_datas/mock_data11.png"], type: "Swap", category: "Others", condition: "Liked New" },
+  { id: 12, title: "Tote Bag Oura Matcha", images: ["./assets/mock_datas/mock_data12.png"], type: "Donate", category: "Clothing", condition: "Good" },
+  { id: 13, title: "Rainbow Sticky Note Cube", images: ["./assets/mock_datas/mock_data13.png"], type: "Donate", category: "Stationery", condition: "Liked New" },
+  { id: 14, title: "Wireless Bluetooth Headphones", images: ["./assets/mock_datas/mock_data14.png"], type: "Swap", category: "Electronics", condition: "Good" },
+  { id: 15, title: "2nd Hand Muji Desk Organiser", images: ["./assets/mock_datas/mock_data15.png"], type: "Donate", category: "Home Goods", condition: "Used" },
+  { id: 16, title: "2nd Hand Baseball Cap", images: ["./assets/mock_datas/mock_data16.png"], type: "Swap", category: "Clothing", condition: "Used" },
   // ... Duplicate data to demonstrate "Load More" functionality
-  { id: 17, title: "Stanley 40 oz Quencher Mist", image: "./assets/mock_datas/mock_data1.png", type: "Swap", category: "Electronics", condition: "Good" },
-  { id: 18, title: "JBL Portable Bluetooth Speaker", image: "./assets/mock_datas/mock_data2.png", type: "Donate", category: "Home Goods", condition: "Liked New" },
-  { id: 19, title: "2nd Hand Introduction to Parallel Programming", image: "./assets/mock_datas/mock_data3.png", type: "Donate", category: "Others", condition: "Used" },
-  { id: 20, title: "IKEA Desk Lamp", image: "./assets/mock_datas/mock_data4.png", type: "Swap", category: "Home Goods", condition: "Good" },
+  { id: 17, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Electronics", condition: "Good" },
+  { id: 18, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Home Goods", condition: "Liked New" },
+  { id: 19, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Others", condition: "Used" },
+  { id: 20, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Good" },
 ];
 
 
@@ -178,36 +175,6 @@ const FilterSidebar = ({
   );
 };
 
-const ItemCard = ({ item }: { item: Product }) => {
-  return (
-    <div className="bg-white p-4 rounded-2xl shadow-sm hover:shadow-md transition-shadow flex flex-col items-center group">
-      <div className="relative w-full aspect-square mb-4 bg-gray-50 rounded-xl overflow-hidden">
-        <div className="absolute top-2 right-2 bg-white p-1.5 rounded-full shadow-sm z-10">
-          {item.type === 'Donate' ? (
-             <Sprout className="text-(--green-color) fill-current" size={24} />
-          ) : (
-             <Recycle className="text-(--green-color) fill-current" size={24} />
-          )}
-        </div>
-        <img 
-          src={item.image} 
-          alt={item.title} 
-          className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
-        />
-      </div>
-
-      <h3 className="text-center font-bold text-(--black-color) text-lg mb-4 line-clamp-2 h-14">
-        {item.title}
-      </h3>
-
-      {/* Need to link to Item Details page for each item when button for the item clicked */}
-      <Button variant="primary" className="w-full text-sm py-2">
-        View Details
-      </Button>
-    </div>
-  );
-};
-
 const ExplorePage: React.FC = () => {
   const [items, setItems] = useState<Product[]>([]);
   const [displayedItems, setDisplayedItems] = useState<Product[]>([]);
@@ -231,9 +198,9 @@ const ExplorePage: React.FC = () => {
       // Tab Filter
       const matchesTab = activeTab === 'All' || item.type === activeTab;
       // Category Filter (if any selected)
-      const matchesCategory = appliedFilters.categories.length === 0 || appliedFilters.categories.includes(item.category);
+      const matchesCategory = appliedFilters.categories.length === 0 || (item.category !== undefined && appliedFilters.categories.includes(item.category));
       // Condition Filter (if any selected)
-      const matchesCondition = appliedFilters.conditions.length === 0 || appliedFilters.conditions.includes(item.condition);
+      const matchesCondition = appliedFilters.conditions.length === 0 || (item.condition !== undefined && appliedFilters.conditions.includes(item.condition));
 
       return matchesSearch && matchesTab && matchesCategory && matchesCondition;
     });
@@ -313,7 +280,7 @@ const ExplorePage: React.FC = () => {
         ) : displayedItems.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
             {displayedItems.map((item) => (
-              <ItemCard key={item.id} item={item} />
+              <ProductCard key={item.id} product={item} />
             ))}
           </div>
         ) : (

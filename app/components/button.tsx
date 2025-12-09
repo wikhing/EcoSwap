@@ -15,7 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   active = false
 }: ButtonProps) => {
-  const baseStyle = "min-w-48 font-bold text-lg transition-all duration-200 flex items-center justify-center ";
+  const baseStyle = "font-bold text-lg transition-all duration-200";
   
   const variants = {
     green: "bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) rounded-full py-2 px-6",

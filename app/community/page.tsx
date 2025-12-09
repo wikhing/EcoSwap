@@ -178,8 +178,9 @@ export default function CommunityPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {UpcomingEvent.map(event => (
+          {UpcomingEvent.map((event, idx) => (
             <UpcomingEventCard
+              key={idx + 1}
               event={event}
             />
           ))}

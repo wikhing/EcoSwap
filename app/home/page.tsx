@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Sprout, Recycle } from 'lucide-react';
+import ProductCard from '../components/productCards';
 
 // Todo: line-111, line-128-130
 
 interface Product {
   id: number;
   title: string;
-  image: string;
+  images: string[];
   type: 'Donate' | 'Swap';
+  category?: string;
+  condition?: string;
 }
 
 interface StatProps {
@@ -25,25 +28,25 @@ const recommendedProducts: Product[] = [
   {
     id: 1,
     title: "2nd Hand Introduction to Parallel Programming",
-    image: "./assets/mock_datas/mock_data1.png",
+    images: ["./assets/mock_datas/mock_data1.png", "./assets/mock_datas/mock_data2.png", "./assets/mock_datas/mock_data3.png"],
     type: 'Donate'
   },
   {
     id: 2,
     title: "Wireless Mechanical Keyboard",
-    image: "./assets/mock_datas/mock_data2.png",
+    images: ["./assets/mock_datas/mock_data2.png"],
     type: 'Swap'
   },
   {
     id: 3,
     title: "2nd Hand North Caroline Hoodie",
-    image: "./assets/mock_datas/mock_data3.png",
+    images: ["./assets/mock_datas/mock_data3.png"],
     type: 'Donate'
   },
   {
     id: 4,
     title: "IKEA Desk Lamp",
-    image: "./assets/mock_datas/mock_data4.png",
+    images: ["./assets/mock_datas/mock_data4.png"],
     type: 'Swap'
   }
 ];
@@ -52,25 +55,25 @@ const trendingProducts: Product[] = [
   {
     id: 5,
     title: "JBL Portable Bluetooth Speaker",
-    image: "./assets/mock_datas/mock_data5.png",
+    images: ["./assets/mock_datas/mock_data5.png"],
     type: 'Donate'
   },
   {
     id: 6,
     title: "Stanley 40 oz Quencher",
-    image: "./assets/mock_datas/mock_data6.png",
+    images: ["./assets/mock_datas/mock_data6.png"],
     type: 'Swap'
   },
   {
     id: 7,
     title: "IKEA Frakta Bag",
-    image: "./assets/mock_datas/mock_data7.png",
+    images: ["./assets/mock_datas/mock_data7.png"],
     type: 'Donate'
   },
   {
     id: 8,
     title: "Heavy Duty Umbrella",
-    image: "./assets/mock_datas/mock_data8.png",
+    images: ["./assets/mock_datas/mock_data8.png"],
     type: 'Swap'
   }
 ];
@@ -83,40 +86,6 @@ const StatCard: React.FC<StatProps> = ({ label, value, subtext, accentColor }) =
     <div className={`absolute bottom-0 left-0 w-full h-2 ${accentColor}`}></div>
   </div>
 );
-
-const ProductCard: React.FC<{ product: Product }> = ({ product }) => (
-  <div className="bg-white min-w-2xs rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col overflow-hidden group">
-    <div className="relative h-48 w-full p-4">
-      <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm z-10">
-        {product.type === 'Donate' ? (
-          <Sprout size={24} className="text-(--green-color) fill-current" />
-        ) : (
-          <Recycle size={24} className="text-(--green-color) fill-current" />
-        )}
-      </div>
-      <img 
-        src={product.image} 
-        alt={product.title} 
-        className="w-full h-full object-contain mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
-      />
-    </div>
-
-    <div className="p-4 flex flex-col grow text-center">
-      <h3 className="font-bold text-(--black-color) text-sm md:text-base leading-tight mb-4 line-clamp-2">
-        {product.title}
-      </h3>
-
-      {/* Need to link to Item Details page for each item when button for the item clicked */}
-      <div className="mt-auto">
-        <button className="bg-(--green-color) text-white text-sm font-bold py-2 px-6 rounded-full hover:bg-white border-2 border-(--green-color) hover:text-(--green-color) transition-colors w-full md:w-auto">
-          View Details
-        </button>
-      </div>
-    </div>
-  </div>
-);
-
-
 
 export default function HomePage() {
     const router = useRouter();

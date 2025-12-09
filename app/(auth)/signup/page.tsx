@@ -82,19 +82,19 @@ export default function SignupPage() {
           
           {/* Logo and Title Row */}
           <div className="flex items-center justify-center gap-2">
-             <div className='relative w-8 h-8'>
+             <Link href="/" className='relative w-full h-16'>
                 <Image
-                src='/ecoswap.png'
+                src='/ecoswap_logo.jpg'
                 alt='ecoswap logo'
                 fill
                 className='object-contain'
                 />
-             </div>
+             </Link>
              {/* CHANGED: text-xl (was 2xl) */}
-             <h1 className="text-xl font-bold text-(--black-color)">EcoSwap</h1>
+             {/* <h1 className="text-xl font-bold text-(--black-color)">EcoSwap</h1> */}
           </div>
           
-          <p className='text-[10px] text-(--dark-grey-color) font-bold tracking-widest mt-0.5 mb-3'>SUSTAINABLE ITEM EXCHANGE</p>
+          {/* <p className='text-[10px] text-(--dark-grey-color) font-bold tracking-widest mt-0.5 mb-3'>SUSTAINABLE ITEM EXCHANGE</p> */}
 
           {/* CHANGED: text-lg (was xl) */}
           <h2 className="text-lg font-bold text-(--black-color)">Join the Movement</h2>
