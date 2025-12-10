@@ -1,4 +1,3 @@
-
 import Link from 'next/link';
 import React from 'react';
 
@@ -16,7 +15,12 @@ const Footer: React.FC = () => {
         <div>
           <h4 className="font-bold text-lg mb-4">Quick Links</h4>
           <ul className="space-y-2 text-white">
-            <li><Link href="/about" className="hover:text-[#81C784]">About Us</Link></li>
+            {/* Updated Link below */}
+            <li>
+              <Link href="/" className="hover:text-[#81C784]">
+                About Us
+              </Link>
+            </li>
             <li><Link href="/impact" className="hover:text-[#81C784]">SDG Info</Link></li>
             <li><Link href="/contact" className="hover:text-[#81C784]">Contact</Link></li>
           </ul>
