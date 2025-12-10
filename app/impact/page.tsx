@@ -27,15 +27,15 @@ interface AchievementProps {
 // 1. Top Stat Card
 const StatCard: React.FC<StatCardProps> = ({ label, value, subtext, trend, isPositive }) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-      <h3 className="text-green-800 font-bold text-sm mb-2">{label}</h3>
-      <div className="text-3xl font-extrabold text-gray-800 mb-1">{value}</div>
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-b-4 border-b-[#4CAF50] border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
+      <h3 className="text-(--dark-grey-color) font-bold text-sm mb-2">{label}</h3>
+      <div className="text-3xl font-extrabold text-(--black-color) mb-1">{value}</div>
       {trend && (
-        <p className={`text-xs font-medium mb-1 ${isPositive ? 'text-green-600' : 'text-red-500'}`}>
+        <p className={`text-xs font-medium mb-1 ${isPositive ? 'text-[#008000]' : 'text-red-500'}`}>
           {isPositive ? '↑' : '↓'} {trend}
         </p>
       )}
-      <p className="text-xs text-gray-500 mt-auto">{subtext}</p>
+      <p className="text-xs text-(--dark-grey-color) mt-auto">{subtext}</p>
     </div>
   );
 };
@@ -53,7 +53,7 @@ const EcoScoreChart = ({ percentage }: { percentage: number }) => {
           cx="60"
           cy="60"
           r={radius}
-          stroke="#e5e7eb"
+          stroke="#EEEEEE"
           strokeWidth="12"
           fill="transparent"
         />
@@ -61,7 +61,7 @@ const EcoScoreChart = ({ percentage }: { percentage: number }) => {
           cx="60"
           cy="60"
           r={radius}
-          stroke="#15803d" 
+          stroke="#085209" 
           strokeWidth="12"
           fill="transparent"
           strokeDasharray={circumference}
@@ -71,7 +71,7 @@ const EcoScoreChart = ({ percentage }: { percentage: number }) => {
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-bold text-green-800">{percentage}%</span>
+        <span className="text-3xl font-bold text-(--green-color)">{percentage}%</span>
       </div>
     </div>
   );
@@ -80,12 +80,12 @@ const EcoScoreChart = ({ percentage }: { percentage: number }) => {
 // 3. Achievement Card
 const AchievementCard: React.FC<AchievementProps> = ({ title, description, icon, isUnlocked = true }) => {
   return (
-    <div className={`bg-white p-4 rounded-xl shadow-sm border ${isUnlocked ? 'border-yellow-200 bg-yellow-50/50' : 'border-gray-100'} flex flex-col items-center text-center h-full`}>
-      <div className="mb-3 p-3 bg-white rounded-full shadow-sm text-yellow-500">
+    <div className={`bg-white p-4 rounded-xl shadow-sm border-2 ${isUnlocked ? 'border-[#D4AF37] bg-white' : 'border-gray-100 bg-gray-400'} flex flex-col items-center text-center h-full`}>
+      <div className="mb-3 p-3 bg-[#D4AF37] rounded-full shadow-sm text-white">
         {icon}
       </div>
-      <h4 className="font-bold text-gray-800 text-sm mb-1">{title}</h4>
-      <p className="text-xs text-gray-500 leading-tight">{description}</p>
+      <h4 className="font-bold text-(--black-color) text-sm mb-1">{title}</h4>
+      <p className="text-xs text-(--dark-grey-color) leading-tight">{description}</p>
     </div>
   );
 };
@@ -94,16 +94,13 @@ const AchievementCard: React.FC<AchievementProps> = ({ title, description, icon,
 
 export default function ImpactTracker() {
   return (
-    <div className="min-h-screen bg-[#f7fdf5] font-sans text-gray-800 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       
-      {/* 1. Added Header Here */}
-     
-
-      <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+      <div className="grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         
         {/* Section Header */}
-        <div className="mb-6 border-b border-green-800 pb-2">
-            <h1 className="text-2xl font-bold text-green-900">Your Eco Impact Tracker</h1>
+        <div className="mb-6 border-b-2 border-(--green-color) pb-2">
+            <h1 className="text-2xl font-bold text-(--green-color)">Your Eco Impact Tracker</h1>
         </div>
 
         {/* Top Stats Grid */}
@@ -140,7 +137,7 @@ export default function ImpactTracker() {
             
             {/* Monthly Activity Bar Chart */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <h3 className="font-bold text-sm text-gray-800 mb-6">Monthly Activity: Items Reused</h3>
+              <h3 className="font-bold text-sm text-(--black-color) mb-6">Monthly Activity: Items Reused</h3>
               <div className="space-y-4">
                 <div className="flex items-center text-xs">
                   <span className="w-20 text-right text-gray-500 mr-3">Donated Items</span>
@@ -162,7 +159,7 @@ export default function ImpactTracker() {
             {/* Trends Line Chart */}
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex justify-between items-center mb-4">
-                <h3 className="font-bold text-sm text-gray-800">CO₂ Reduction Trend (Week/Month)</h3>
+                <h3 className="font-bold text-sm text-(--black-color)">CO₂ Reduction Trend (Week/Month)</h3>
                 <span className="text-xs font-bold text-green-700 underline cursor-pointer">Month</span>
               </div>
               
@@ -230,7 +227,7 @@ export default function ImpactTracker() {
 
           {/* Right Column: Eco Score */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-            <h3 className="font-bold text-sm text-gray-800 mb-6 self-start w-full text-left">Your EcoScore</h3>
+            <h3 className="font-bold text-lg text-(--black-color) mb-6 self-start w-full text-center">Your EcoScore</h3>
             
             <div className="mb-6">
               <EcoScoreChart percentage={75} />
@@ -244,15 +241,15 @@ export default function ImpactTracker() {
         </div>
 
         {/* Green Banner */}
-        <div className="bg-white border border-green-600 rounded-lg p-4 mb-8 text-center shadow-sm">
-          <p className="text-green-900 font-medium">
-            🏆 You saved <span className="font-black text-green-700 text-lg">47% more CO₂</span> than the average user this month!
+        <div className="bg-white border-2 border-(--green-color) rounded-lg p-4 mb-8 text-center shadow-sm">
+          <p className="text-(--green-color) font-medium">
+            🏆 You saved <span className="font-bold text-(--green-color) text-xl">47% more CO₂</span> than the average user this month!
           </p>
         </div>
 
         {/* Leaderboard */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-8">
-          <h3 className="font-bold text-sm text-gray-800 mb-4">Top Eco Contributors (Monthly)</h3>
+          <h3 className="font-bold text-md text-(--black-color) mb-4">Top Eco Contributors (Monthly)</h3>
           <div className="space-y-4">
             
             <LeaderboardRow 
@@ -289,32 +286,36 @@ export default function ImpactTracker() {
 
         {/* Achievements */}
         <div>
-          <h3 className="text-xl font-bold text-green-900 mb-4 border-b border-green-800 pb-2 inline-block">Your Achievements</h3>
+          <h3 className="text-xl font-bold text-(--green-color) mb-4 border-b-2 border-(--green-color) pb-2 inline-block">Your Achievements</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <AchievementCard 
               title="First Donation" 
               description="The first step to sustainability."
               icon={<HeartIcon />}
+              isUnlocked={true}
             />
             <AchievementCard 
               title="One Month Streak" 
               description="Active on the platform for 30 days."
               icon={<RefreshIcon />}
+              isUnlocked={true}
             />
              <AchievementCard 
               title="Zero Waste Hero" 
               description="Saved over 20kg of CO₂ emissions."
               icon={<LeafIcon />}
+              isUnlocked={false}
             />
              <AchievementCard 
               title="Community Pillar" 
               description="Facilitated 10 successful exchanges."
               icon={<UsersIcon />}
+              isUnlocked={false}
             />
           </div>
         </div>
 
-      </main>
+      </div>
 
       {/* 2. Added Footer Here */}
      
@@ -337,9 +338,9 @@ const LeaderboardRow = ({ rank, name, score, isGold, isSilver, isBronze }: { ran
         <div className={`w-6 flex justify-center font-bold ${iconColor}`}>
            {rank <= 3 ? '🏅' : <span className="text-gray-500 font-normal text-xs">{rank}.</span>}
         </div>
-        <span className={`font-medium ${rank === 1 ? 'text-yellow-600' : 'text-gray-700'}`}>{name}</span>
+        <span className={`font-medium ${rank === 1 ? 'text-yellow-600 text-lg' : 'text-gray-700'}`}>{name}</span>
       </div>
-      <span className="font-bold text-green-800 text-xs">{score}</span>
+      <span className={`font-bold text-(--green-color) ${rank === 1 ? 'text-lg text-yellow-600' : 'text-xs'}`}>{score}</span>
     </div>
   );
 };
