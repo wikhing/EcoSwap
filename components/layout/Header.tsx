@@ -73,7 +73,7 @@ export default function Header() {
                             >
                                 Login
                             </Link>
-                            <Link className="w-28 h-fit text-center text-white font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-(--green-color) hover:bg-white hover:text-(--green-color) transition" 
+                            <Link className="w-28 h-fit text-center whitespace-nowrap text-white font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-(--green-color) hover:bg-white hover:text-(--green-color) transition" 
                                 href="signup" 
                             >
                                 Sign Up
