@@ -5,11 +5,14 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
 import Input from '../Input';
+import { createClient } from '@/lib/supabase';
 
 export default function SignupPage() {
   const router = useRouter();
+  const supabase = createClient();
   const [agreed, setAgreed] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -21,7 +24,7 @@ export default function SignupPage() {
   const validate = () => {
     const newErrors: { [key: string]: string } = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
+
     // Password Strength Regex: Min 8 chars, at least 1 letter and 1 number
     const passwordStrengthRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/;
 
@@ -47,53 +50,86 @@ export default function SignupPage() {
     }
 
     if (!agreed) {
-        // You might want to show a global error or highlight the checkbox
-        alert("You must agree to the pledge");
-        return false;
+      // You might want to show a global error or highlight the checkbox
+      alert("You must agree to the pledge");
+      return false;
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      console.log('Signup successful', formData);
-      
+    if (!validate()) return;
+
+    setLoading(true);
+    setErrors({});
+
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          full_name: formData.fullName,
+        }
+      }
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setErrors({ email: error.message });
+      return;
+    }
+
+    if (data.user) {
       router.push('/home');
-    };
+    }
+  }
+
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+
+    if (error) {
+      alert(error.message);
+    }
   }
 
   return (
-    <div 
+    <div
       className="flex items-center justify-center min-h-screen px-4 py-10"
-      style={{ 
-        backgroundImage: 'url(/assets/auth/login&signup.png)', 
+      style={{
+        backgroundImage: 'url(/assets/auth/login&signup.png)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center' 
+        backgroundPosition: 'center'
       }}
     >
       {/* CHANGED: max-w-md (was lg), p-6 (was p-10) */}
       <div className="bg-white p-6 rounded-xl shadow-xl w-full max-w-md animate-fade-in-up">
-        
+
         {/* Header with Logo */}
         <div className="text-center mb-5">
-          
+
           {/* Logo and Title Row */}
           <div className="flex items-center justify-center gap-2">
-             <Link href="/" className='relative w-full h-16'>
-                <Image
+            <Link href="/" className='relative w-full h-16'>
+              <Image
                 src='/ecoswap_logo.jpg'
                 alt='ecoswap logo'
                 fill
                 className='object-contain'
-                />
-             </Link>
-             {/* CHANGED: text-xl (was 2xl) */}
-             {/* <h1 className="text-xl font-bold text-(--black-color)">EcoSwap</h1> */}
+              />
+            </Link>
+            {/* CHANGED: text-xl (was 2xl) */}
+            {/* <h1 className="text-xl font-bold text-(--black-color)">EcoSwap</h1> */}
           </div>
-          
+
           {/* <p className='text-[10px] text-(--dark-grey-color) font-bold tracking-widest mt-0.5 mb-3'>SUSTAINABLE ITEM EXCHANGE</p> */}
 
           {/* CHANGED: text-lg (was xl) */}
@@ -105,45 +141,45 @@ export default function SignupPage() {
 
         {/* CHANGED: space-y-3 (was space-y-4) */}
         <form onSubmit={handleSignup} className="space-y-3">
-          
-            <Input 
-              label="FULL NAME" 
-              id="fullName" 
-              type='text'
-              placeholder="e.g. WONG WEI LI" 
-              value={formData.fullName}
-              onChange={(e) => setFormData({...formData, fullName: e.target.value})}
-              error={errors.fullName}
-            />
 
-            <Input 
-              label="STUDENT EMAIL" 
-              id="email" 
-              type="email" 
-              placeholder="student@um.edu.my" 
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              error={errors.email}
-            />
+          <Input
+            label="FULL NAME"
+            id="fullName"
+            type='text'
+            placeholder="e.g. WONG WEI LI"
+            value={formData.fullName}
+            onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+            error={errors.fullName}
+          />
 
-            <Input 
-              label="PASSWORD" 
-              id="password" 
-              type="password" 
-              placeholder="Create a strong password" 
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              error={errors.password}
-            />
-            <Input 
-              label="CONFIRM PASSWORD" 
-              id="confirmPassword" 
-              type="password" 
-              placeholder="Re-enter password" 
-              value={formData.confirmPassword}
-              onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-              error={errors.confirmPassword}
-            />
+          <Input
+            label="STUDENT EMAIL"
+            id="email"
+            type="email"
+            placeholder="student@um.edu.my"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            error={errors.email}
+          />
+
+          <Input
+            label="PASSWORD"
+            id="password"
+            type="password"
+            placeholder="Create a strong password"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            error={errors.password}
+          />
+          <Input
+            label="CONFIRM PASSWORD"
+            id="confirmPassword"
+            type="password"
+            placeholder="Re-enter password"
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+            error={errors.confirmPassword}
+          />
 
           {/* Pledge Checkbox */}
           <div className="flex items-start gap-2 py-1">
@@ -166,11 +202,12 @@ export default function SignupPage() {
           </div>
 
           {/* CHANGED: py-2.5, text-sm */}
-          <button 
-            type="submit" 
-            className="w-full py-2.5 rounded-lg bg-(--green-color) text-white font-bold text-sm hover:bg-green-800 transition shadow-md mt-1"
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 rounded-lg bg-(--green-color) text-white font-bold text-sm hover:bg-green-800 transition shadow-md mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Account
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
 
           {/* Divider */}
@@ -183,9 +220,13 @@ export default function SignupPage() {
 
           {/* CHANGED: space-y-2 (tighter gap) */}
           <div className="space-y-2">
-              {/* Google Button */}
-              {/* CHANGED: py-2 (shorter button), text-sm */}
-              <button className="w-full py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-sm bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2">
+            {/* Google Button */}
+            {/* CHANGED: py-2 (shorter button), text-sm */}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="w-full py-2 rounded-lg border border-gray-300 text-gray-700 font-semibold text-sm bg-white hover:bg-gray-50 transition flex items-center justify-center gap-2"
+            >
               <svg className='block' version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16px" height="16px">
                 <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
                 <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
@@ -194,17 +235,17 @@ export default function SignupPage() {
                 <path fill="none" d="M0 0h48v48H0z"></path>
               </svg>
               Google
-              </button>
+            </button>
           </div>
-          
+
           <div className="text-center text-xs mt-2">
             <span className="text-(--dark-grey-color)">Already have an account? </span>
             <Link href={"/login"} className='text-(--green-color) font-bold hover:underline ml-1'>
-                Login
+              Login
             </Link>
           </div>
 
-          
+
 
         </form>
 
