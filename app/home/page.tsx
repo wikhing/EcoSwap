@@ -6,6 +6,7 @@ import { Search, Sprout, Recycle } from 'lucide-react';
 import ProductCard from '../components/productCards';
 import Button from '../components/button';
 import Link from 'next/link';
+import StatCard from '../components/statCard';
 
 // Todo: line-111, line-128-130
 
@@ -16,13 +17,6 @@ interface Product {
   type: 'Donate' | 'Swap';
   category?: string;
   condition?: string;
-}
-
-interface StatProps {
-  label: string;
-  value: string;
-  subtext: string;
-  accentColor: string;
 }
 
 // --- Mock Data, To Be Replaced with Database Input ---
@@ -87,15 +81,6 @@ const bannerImages = [
   { src: "/assets/banner4.png", alt: "Eco Impact Banner" }
 ];
 
-const StatCard: React.FC<StatProps> = ({ label, value, subtext, accentColor }) => (
-  <div className="bg-white p-6 rounded-xl shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden h-40">
-    <h3 className="text-(--dark-grey-color) text-sm font-bold mb-2 uppercase tracking-wide">{label}</h3>
-    <p className="text-4xl font-extrabold text-(--black-color) mb-2">{value}</p>
-    <p className="text-(--dark-grey-color) text-xs">{subtext}</p>
-    <div className={`absolute bottom-0 left-0 w-full h-2 ${accentColor}`}></div>
-  </div>
-);
-
 export default function HomePage() {
     const router = useRouter();
     const [bannerIndex, setBannerIndex] = useState(0);
@@ -158,30 +143,10 @@ export default function HomePage() {
                       <a href="/impact" className="text-(--black-color) font-medium underline hover:text-(--green-color)">View Full Impact</a>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                      <StatCard 
-                          label="CO₂ Saved Today" 
-                          value="0.5 kg" 
-                          subtext="↑ +15% from yesterday" 
-                          accentColor="bg-green-500" 
-                      />
-                      <StatCard 
-                          label="Total CO₂ Saved" 
-                          value="12.5 kg" 
-                          subtext="Equivalent to 6 trees planted" 
-                          accentColor="bg-blue-400" 
-                      />
-                      <StatCard 
-                          label="Items donated" 
-                          value="8" 
-                          subtext="3 Donated, 5 Swapped" 
-                          accentColor="bg-orange-400" 
-                      />
-                      <StatCard 
-                          label="Community Score" 
-                          value="450" 
-                          subtext="Green Points Earned" 
-                          accentColor="bg-yellow-400" 
-                      />
+                      <StatCard label="CO₂ Saved Today" value="0.5 kg" trend="+15% from yesterday" isPositive={true} subtext="" accentColor="border-b-green-500" />
+                      <StatCard label="Total CO₂ Saved" value="12.5 kg" subtext="Equivalent to 6 trees planted" accentColor="border-b-blue-400" />
+                      <StatCard label="Items Reused" value="8" subtext="3 Donated, 5 Swapped" accentColor="border-b-orange-400"/>
+                      <StatCard label="Community Score" value="450" subtext="Green Points Earned" accentColor="border-b-yellow-400" />
                   </div>
               </div>
   
