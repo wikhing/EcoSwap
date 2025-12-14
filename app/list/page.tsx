@@ -2,11 +2,24 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, AlertTriangle, Clock, Ban, Leaf, Recycle, List, HeartHandshake, ShieldCheck, Image as ImageIcon } from 'lucide-react';
 import Hero from '../components/hero';
+import { createClient } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 const Share: React.FC = () => {
+  const supabase = createClient();
+  const router = useRouter();
+
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
-  const [type, setType] = useState<'Donate'|'Swap'>('Donate');
+  const [type, setType] = useState<'donate' | 'swap'>('donate');
   const [itemCategory, setItemCategory] = useState('');
+  const [title, setTitle] = useState('');
+  const [condition, setCondition] = useState('');
+  const [description, setDescription] = useState('');
+  const [pickupMethod, setPickupMethod] = useState<'pickup' | 'dropoff'>('pickup');
+  const [campusLocation, setCampusLocation] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
   const categories = ["Clothing", "Books", "Electronics", "Home Goods", "Stationery", "Others"];
 
   useEffect(() => {
@@ -15,10 +28,10 @@ const Share: React.FC = () => {
     };
   }, []);
 
-  interface HandleFileChangeEvent extends React.ChangeEvent<HTMLInputElement> {}
+  interface HandleFileChangeEvent extends React.ChangeEvent<HTMLInputElement> { }
 
   interface HandleFileChange {
-      (e: HandleFileChangeEvent): void;
+    (e: HandleFileChangeEvent): void;
   }
 
   const handleFileChange: HandleFileChange = (e) => {
@@ -29,7 +42,7 @@ const Share: React.FC = () => {
         file: file,
         preview: URL.createObjectURL(file)
       }));
-      
+
       // Append new images to existing list
       setImages((prev: { file: File; preview: string }[]) => [...prev, ...newImages]);
     }
@@ -38,6 +51,118 @@ const Share: React.FC = () => {
   const removeImage = (indexToRemove: number) => {
     URL.revokeObjectURL(images[indexToRemove].preview);
     setImages(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleSubmit = async () => {
+    setError('');
+
+    // Validation
+    if (!title.trim()) {
+      setError('Please enter an item title');
+      return;
+    }
+    if (!itemCategory) {
+      setError('Please select a category');
+      return;
+    }
+    if (!condition) {
+      setError('Please select item condition');
+      return;
+    }
+    if (images.length === 0) {
+      setError('Please upload at least one image');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Get current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+      if (userError || !user) {
+        setError('You must be logged in to share an item');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 1. Insert item into items table
+      const { data: item, error: itemError } = await supabase
+        .from('items')
+        .insert({
+          user_id: user.id,
+          title: title.trim(),
+          type: type,
+          category: itemCategory,
+          condition: condition,
+          description: description.trim(),
+          pickup_method: pickupMethod,
+          campus_location: campusLocation.trim(),
+          status: 'active'
+        })
+        .select()
+        .single();
+
+      if (itemError) {
+        console.error('Item insert error:', itemError);
+        setError('Failed to create item: ' + itemError.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Upload images to Supabase storage and save URLs
+      const imageUrls: string[] = [];
+
+      for (const imageObj of images) {
+        const file = imageObj.file;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${user.id}/${item.id}/${Date.now()}.${fileExt}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('item-images')
+          .upload(fileName, file);
+
+        if (uploadError) {
+          console.error('Upload error:', uploadError);
+          continue; // Skip failed uploads but continue with others
+        }
+
+        // Get public URL
+        const { data: urlData } = supabase.storage
+          .from('item-images')
+          .getPublicUrl(fileName);
+
+        if (urlData?.publicUrl) {
+          imageUrls.push(urlData.publicUrl);
+        }
+      }
+
+      // 3. Insert image URLs into item_images table
+      if (imageUrls.length > 0) {
+        const imageRecords = imageUrls.map(url => ({
+          item_id: item.id,
+          url: url
+        }));
+
+        const { error: imagesError } = await supabase
+          .from('item_images')
+          .insert(imageRecords);
+
+        if (imagesError) {
+          console.error('Image records error:', imagesError);
+        }
+      }
+
+      // Success - redirect to home or items page
+      alert('Item shared successfully!');
+      router.push('/home');
+
+    } catch (err) {
+      console.error('Submit error:', err);
+      setError('An unexpected error occurred');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const textareaStyle: React.CSSProperties = {
@@ -58,6 +183,13 @@ const Share: React.FC = () => {
 
           {/* Left Side: Form */}
           <div className="lg:col-span-7 space-y-8">
+
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                {error}
+              </div>
+            )}
 
             {/* Image Upload Area */}
             <div className="w-full">
@@ -112,6 +244,8 @@ const Share: React.FC = () => {
                 <label className="font-bold text-lg min-w-24">Item Title:</label>
                 <input
                   type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   className="flex-1 bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
                   aria-label="Item Title"
                 />
@@ -122,23 +256,21 @@ const Share: React.FC = () => {
                 <label className="font-bold text-lg min-w-24">Type:</label>
                 <div className="flex gap-4">
                   <button
-                    onClick={() => setType('Donate')}
-                    className={`px-6 py-1.5 rounded-full font-medium transition ${
-                      type === 'Donate'
+                    onClick={() => setType('donate')}
+                    className={`px-6 py-1.5 rounded-full font-medium transition ${type === 'donate'
                         ? 'bg-(--green-color) border-2 border-white text-white'
                         : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
-                    }`}
+                      }`}
                     type="button"
                   >
                     Donate
                   </button>
                   <button
-                    onClick={() => setType('Swap')}
-                    className={`px-6 py-1.5 rounded-full font-medium transition ${
-                      type === 'Swap'
+                    onClick={() => setType('swap')}
+                    className={`px-6 py-1.5 rounded-full font-medium transition ${type === 'swap'
                         ? 'bg-(--green-color) border-2 border-white text-white'
                         : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
-                    }`}
+                      }`}
                     type="button"
                   >
                     Swap
@@ -150,22 +282,21 @@ const Share: React.FC = () => {
               <div className="flex items-start gap-4">
                 <label className="font-bold text-lg min-w-24 mt-2">Category:</label>
                 <div className="flex-1">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {categories.map((cat) => (
-                            <button
-                                key={cat}
-                                type="button"
-                                onClick={() => setItemCategory(cat)}
-                                className={`py-2 px-3 rounded-lg text-sm font-medium border-2 transition text-center ${
-                                    itemCategory === cat
-                                    ? 'border-(--green-color) bg-(--green-color) text-white shadow-md'
-                                    : 'border-white text-(--green-color) hover:border-(--green-color) bg-white'
-                                }`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        type="button"
+                        onClick={() => setItemCategory(cat)}
+                        className={`py-2 px-3 rounded-lg text-sm font-medium border-2 transition text-center ${itemCategory === cat
+                            ? 'border-(--green-color) bg-(--green-color) text-white shadow-md'
+                            : 'border-white text-(--green-color) hover:border-(--green-color) bg-white'
+                          }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -175,7 +306,14 @@ const Share: React.FC = () => {
                 <div className="space-y-3">
                   {['Like New', 'Good', 'Used'].map((option) => (
                     <label key={option} className="flex items-center gap-3 cursor-pointer">
-                      <input type="radio" name="condition" className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)" />
+                      <input
+                        type="radio"
+                        name="condition"
+                        value={option}
+                        checked={condition === option}
+                        onChange={(e) => setCondition(e.target.value)}
+                        className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)"
+                      />
                       <span className="text-lg">{option}</span>
                     </label>
                   ))}
@@ -186,13 +324,15 @@ const Share: React.FC = () => {
               <div className="flex items-start gap-4">
                 <label className="font-bold text-lg min-w-24 mt-2">Description:</label>
                 <div className="flex-1 relative">
-                    {/* Single Textarea with notebook line styling */}
-                    <textarea
-                        rows={4}
-                        style={textareaStyle}
-                        className="w-full bg-transparent outline-none border-none p-0 pt-1 text-lg focus:ring-0"
-                        placeholder="Describe your item here..."
-                    />
+                  {/* Single Textarea with notebook line styling */}
+                  <textarea
+                    rows={4}
+                    style={textareaStyle}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="w-full bg-transparent outline-none border-none p-0 pt-1 text-lg focus:ring-0"
+                    placeholder="Describe your item here..."
+                  />
                 </div>
               </div>
 
@@ -202,11 +342,25 @@ const Share: React.FC = () => {
               </div>
               <div className="flex gap-12 ml-34 -mt-6">
                 <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="radio" name="delivery" className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)" />
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="pickup"
+                    checked={pickupMethod === 'pickup'}
+                    onChange={() => setPickupMethod('pickup')}
+                    className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)"
+                  />
                   <span className="text-lg">Pickup</span>
                 </label>
                 <label className="flex items-center gap-3 cursor-pointer">
-                  <input type="radio" name="delivery" className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)" />
+                  <input
+                    type="radio"
+                    name="delivery"
+                    value="dropoff"
+                    checked={pickupMethod === 'dropoff'}
+                    onChange={() => setPickupMethod('dropoff')}
+                    className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)"
+                  />
                   <span className="text-lg">Drop-off</span>
                 </label>
               </div>
@@ -216,6 +370,8 @@ const Share: React.FC = () => {
                 <label className="font-bold text-lg whitespace-nowrap">Campus Location:</label>
                 <input
                   type="text"
+                  value={campusLocation}
+                  onChange={(e) => setCampusLocation(e.target.value)}
                   className="flex-1 bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
                   aria-label='Campus Location'
                 />
@@ -223,8 +379,12 @@ const Share: React.FC = () => {
 
               {/* Submit Button */}
               <div className="pt-12 flex justify-center">
-                <button className="bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) text-2xl font-bold py-2 px-12 rounded-full shadow-lg transition-colors">
-                  Submit Now
+                <button
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) text-2xl font-bold py-2 px-12 rounded-full shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Submitting...' : (type === 'donate' ? 'Submit Donation' : 'Submit Swap')}
                 </button>
               </div>
 
@@ -247,7 +407,7 @@ const Share: React.FC = () => {
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="bg-(--black-color) text-white p-1 rounded">
-                       <AlertTriangle size={20} />
+                      <AlertTriangle size={20} />
                     </div>
                     <span className="text-lg font-medium text-(--black-color)">No broken electronics</span>
                   </li>
@@ -288,26 +448,26 @@ const Share: React.FC = () => {
                 </ul>
               </section>
 
-               <div className="pt-6"></div>
-               <div className="bg-white rounded-3xl">
+              <div className="pt-6"></div>
+              <div className="bg-white rounded-3xl">
                 <h3 className="text-2xl font-bold text-(--black-color) mb-4 border-b-2 border-gray-300 inline-block pb-1">
-                    How Swapping Works
+                  How Swapping Works
                 </h3>
                 <ul className="space-y-4">
-                    <li className="flex items-center gap-3">
-                        <List className="text-(--green-color)" size={28} />
-                        <span className="text-lg font-medium text-(--black-color)">List your item</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                        <HeartHandshake className="text-(--black-color)" size={28} />
-                        <span className="text-lg font-medium text-(--black-color)">Match with others</span>
-                    </li>
-                    <li className="flex items-center gap-3">
-                        <ShieldCheck className="text-(--black-color)" size={28} />
-                        <span className="text-lg font-medium text-(--black-color)">Agree & meet safely</span>
-                    </li>
+                  <li className="flex items-center gap-3">
+                    <List className="text-(--green-color)" size={28} />
+                    <span className="text-lg font-medium text-(--black-color)">List your item</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <HeartHandshake className="text-(--black-color)" size={28} />
+                    <span className="text-lg font-medium text-(--black-color)">Match with others</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <ShieldCheck className="text-(--black-color)" size={28} />
+                    <span className="text-lg font-medium text-(--black-color)">Agree & meet safely</span>
+                  </li>
                 </ul>
-               </div>
+              </div>
             </div>
           </div>
         </div>
