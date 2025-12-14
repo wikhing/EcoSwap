@@ -4,9 +4,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
 import Hero from '../components/hero';
 import ProductCard from '../components/productCards';
+import { createClient } from '../../lib/supabase';
 
 interface Product {
-  id: number;
+  id: number | string;
   title: string;
   images: string[];
   type: 'Donate' | 'Swap';
@@ -23,37 +24,37 @@ const MOCK_DATABASE: Product[] = [
   { id: 1, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Home Goods", condition: "Good" },
   { id: 2, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Electronics", condition: "Used" },
   { id: 3, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Books", condition: "Good" },
-  { id: 4, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Liked New" },
+  { id: 4, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
   { id: 5, title: "One Life Graphic T-shirt", images: ["./assets/mock_datas/mock_data5.png"], type: "Swap", category: "Clothing", condition: "Used" },
-  { id: 6, title: "Wireless Mechanic Keyboard", images: ["./assets/mock_datas/mock_data6.png"], type: "Swap", category: "Electronics", condition: "Liked New" },
+  { id: 6, title: "Wireless Mechanic Keyboard", images: ["./assets/mock_datas/mock_data6.png"], type: "Swap", category: "Electronics", condition: "Like New" },
   { id: 7, title: "2nd Hand North Carolina Hoodie", images: ["./assets/mock_datas/mock_data7.png"], type: "Donate", category: "Clothing", condition: "Good" },
   { id: 8, title: "IKEA Frakta Bag", images: ["./assets/mock_datas/mock_data8.png"], type: "Donate", category: "Others", condition: "Good" },
   { id: 9, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data9.png"], type: "Swap", category: "Others", condition: "Used" },
   { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", images: ["./assets/mock_datas/mock_data10.png"], type: "Donate", category: "Books", condition: "Good" },
-  { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", images: ["./assets/mock_datas/mock_data11.png"], type: "Swap", category: "Others", condition: "Liked New" },
+  { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", images: ["./assets/mock_datas/mock_data11.png"], type: "Swap", category: "Others", condition: "Like New" },
   { id: 12, title: "Tote Bag Oura Matcha", images: ["./assets/mock_datas/mock_data12.png"], type: "Donate", category: "Clothing", condition: "Good" },
-  { id: 13, title: "Rainbow Sticky Note Cube", images: ["./assets/mock_datas/mock_data13.png"], type: "Donate", category: "Stationery", condition: "Liked New" },
+  { id: 13, title: "Rainbow Sticky Note Cube", images: ["./assets/mock_datas/mock_data13.png"], type: "Donate", category: "Stationery", condition: "Like New" },
   { id: 14, title: "Wireless Bluetooth Headphones", images: ["./assets/mock_datas/mock_data14.png"], type: "Swap", category: "Electronics", condition: "Good" },
   { id: 15, title: "2nd Hand Muji Desk Organiser", images: ["./assets/mock_datas/mock_data15.png"], type: "Donate", category: "Home Goods", condition: "Used" },
   { id: 16, title: "2nd Hand Baseball Cap", images: ["./assets/mock_datas/mock_data16.png"], type: "Swap", category: "Clothing", condition: "Used" },
   // ... Duplicate data to demonstrate "Load More" functionality
   { id: 17, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Electronics", condition: "Good" },
-  { id: 18, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Home Goods", condition: "Liked New" },
+  { id: 18, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Home Goods", condition: "Like New" },
   { id: 19, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Others", condition: "Used" },
   { id: 20, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Good" },
 ];
 
 
 
-const Button = ({ 
-  children, 
-  variant = 'primary', 
-  className = '', 
+const Button = ({
+  children,
+  variant = 'primary',
+  className = '',
   onClick,
   active = false
 }: { children: React.ReactNode, variant?: 'primary' | 'outline' | 'filter', className?: string, onClick?: () => void, active?: boolean }) => {
   const baseStyle = "min-w-48 font-bold text-lg transition-all duration-200 flex items-center justify-center ";
-  
+
   const variants = {
     primary: "bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) rounded-full py-2 px-6",
     outline: "bg-white border border-(--green-color) text-(--green-color) hover:bg-green-50 rounded-full py-2 px-6",
@@ -67,27 +68,27 @@ const Button = ({
   );
 };
 
-const FilterSidebar = ({ 
-  isOpen, 
-  onClose, 
-  filters, 
+const FilterSidebar = ({
+  isOpen,
+  onClose,
+  filters,
   setFilters,
   onApply
-}: { 
-  isOpen: boolean; 
+}: {
+  isOpen: boolean;
   onClose: () => void;
   filters: FilterState;
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
   onApply: () => void;
 }) => {
   const categories = ["Clothing", "Books", "Electronics", "Home Goods", "Stationery", "Others"];
-  const conditions = ["Liked New", "Good", "Used"];
+  const conditions = ["Like New", "Good", "Used"];
 
   const toggleFilter = (type: 'categories' | 'conditions', value: string) => {
     setFilters(prev => {
       const list = prev[type];
-      const newList = list.includes(value) 
-        ? list.filter(item => item !== value) 
+      const newList = list.includes(value)
+        ? list.filter(item => item !== value)
         : [...list, value];
       return { ...prev, [type]: newList };
     });
@@ -99,11 +100,11 @@ const FilterSidebar = ({
 
   return (
     <div className={`fixed inset-0 z-50 flex justify-end ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
-      <div 
-        className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`} 
+      <div
+        className={`absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
         onClick={onClose}
       />
-      
+
       <div className={`relative bg-white w-full max-w-md h-full p-8 shadow-2xl overflow-y-auto flex flex-col transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex justify-end mb-4">
           <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full" aria-label="Close filters">
@@ -117,14 +118,14 @@ const FilterSidebar = ({
             {categories.map((cat) => (
               <label key={cat} className="flex items-center cursor-pointer group">
                 <div className="relative flex items-center">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded bg-gray-100 checked:bg-(--green-color) checked:border-(--green-color) transition-colors"
                     checked={filters.categories.includes(cat)}
                     onChange={() => toggleFilter('categories', cat)}
                   />
                   <svg className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                     <polyline points="20 6 9 17 4 12"></polyline>
+                    <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
                 <span className="ml-4 text-xl font-bold text-(--black-color) group-hover:text-(--green-color) transition-colors">{cat}</span>
@@ -139,14 +140,14 @@ const FilterSidebar = ({
             {conditions.map((cond) => (
               <label key={cond} className="flex items-center cursor-pointer group">
                 <div className="relative flex items-center">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     className="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded bg-gray-100 checked:bg-(--green-color) checked:border-(--green-color) transition-colors"
                     checked={filters.conditions.includes(cond)}
                     onChange={() => toggleFilter('conditions', cond)}
                   />
                   <svg className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-                     <polyline points="20 6 9 17 4 12"></polyline>
+                    <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
                 <span className="ml-4 text-xl font-bold text-(--black-color) group-hover:text-(--green-color) transition-colors">{cond}</span>
@@ -156,13 +157,13 @@ const FilterSidebar = ({
         </div>
 
         <div className="mt-auto space-y-4">
-          <button 
+          <button
             onClick={onApply}
             className="w-full bg-(--green-color) text-white text-xl font-bold py-4 rounded-full hover:bg-green-900 transition-colors"
           >
             Apply All
           </button>
-          <button 
+          <button
             onClick={clearAll}
             className="w-full bg-white border-2 border-(--green-color) text-(--green-color) text-xl font-bold py-4 rounded-full hover:bg-green-50 transition-colors"
           >
@@ -177,6 +178,7 @@ const FilterSidebar = ({
 
 const ExplorePage: React.FC = () => {
   const [items, setItems] = useState<Product[]>([]);
+  const [dbItems, setDbItems] = useState<Product[]>([]);
   const [displayedItems, setDisplayedItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -188,11 +190,59 @@ const ExplorePage: React.FC = () => {
   const [filters, setFilters] = useState<FilterState>({ categories: [], conditions: [] });
   const [appliedFilters, setAppliedFilters] = useState<FilterState>({ categories: [], conditions: [] });
 
+  const supabase = createClient();
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      const { data, error } = await supabase
+        .from('items')
+        .select('*, item_images(url)');
+
+      if (error) {
+        console.error('Error fetching items:', error);
+      } else if (data) {
+        const formattedData: Product[] = data.map((item: any) => {
+          // Process item_images relation
+          const rawImages = item.item_images || [];
+          const processedImages = rawImages.map((imgObj: any) => {
+            const imgStr = imgObj.url;
+            // If it's already a full URL, leave it. Otherwise get public URL.
+            if (imgStr.startsWith('http')) return imgStr;
+
+            try {
+              const { data: publicUrlData } = supabase.storage
+                .from('item-images')
+                .getPublicUrl(imgStr);
+              return publicUrlData.publicUrl;
+            } catch (e) {
+              return imgStr;
+            }
+          });
+
+          return {
+            id: item.id,
+            title: item.title,
+            images: processedImages,
+            type: (item.type.charAt(0).toUpperCase() + item.type.slice(1)) as 'Donate' | 'Swap', // Ensure strict typing & capitalization
+            category: item.category,
+            condition: item.condition === 'Liked New' ? 'Like New' : item.condition, // Standardize 'Like New'
+          };
+        });
+        setDbItems(formattedData);
+      }
+    };
+
+    fetchItems();
+  }, []); // Only run on mount
+
   useEffect(() => {
     setIsLoading(true);
-    
+
+    // Combine Mock Data and DB Items
+    const allItems = [...MOCK_DATABASE, ...dbItems];
+
     // Filter the entire database
-    let filteredData = MOCK_DATABASE.filter(item => {
+    let filteredData = allItems.filter(item => {
       // Search Filter
       const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
       // Tab Filter
@@ -207,21 +257,21 @@ const ExplorePage: React.FC = () => {
 
     setItems(filteredData);
     setPage(1); // Reset to page 1 on new filter
-    
+
     // Initial Load for Page 1
     setTimeout(() => {
       setDisplayedItems(filteredData.slice(0, itemsPerPage));
       setIsLoading(false);
     }, 500);
 
-  }, [searchQuery, activeTab, appliedFilters]);
+  }, [searchQuery, activeTab, appliedFilters, dbItems]);
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
     const startIndex = (nextPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const newBatch = items.slice(startIndex, endIndex);
-    
+
     setDisplayedItems(prev => [...prev, ...newBatch]);
     setPage(nextPage);
   };
@@ -233,24 +283,24 @@ const ExplorePage: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      
+
       <Hero title="Explore Items" subtitle="Find items to swap, donate, or discover" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
-        
+
         {/* Search & Filter Bar */}
         <div className="flex gap-4 mb-8">
           <div className="relative grow bg-white rounded-full">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" size={20} />
-            <input 
-              type="text" 
-              placeholder="Search for items..." 
+            <input
+              type="text"
+              placeholder="Search for items..."
               className="w-full py-4 pl-16 pr-6 rounded-full shadow-sm border-none focus:ring-2 focus:ring-(--green-color) text-lg text-(--black-color) placeholder-(--light-grey-color)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <button 
+          <button
             onClick={() => setIsFilterOpen(true)}
             className="bg-white p-4 rounded-full shadow-sm hover:bg-gray-50 text-(--black-color)"
             aria-label='Menu'
@@ -262,15 +312,15 @@ const ExplorePage: React.FC = () => {
         {/* Tabs */}
         <div className="flex flex-wrap justify-center gap-6 mb-12">
           <Button variant="filter" active={activeTab === 'All'} onClick={() => setActiveTab('All')}>
-             All
+            All
           </Button>
           <Button variant="filter" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
-             <Sprout className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
-             Donate
+            <Sprout className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
+            Donate
           </Button>
           <Button variant="filter" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
-             <Recycle className={activeTab === 'Swap' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
-             Swap
+            <Recycle className={activeTab === 'Swap' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
+            Swap
           </Button>
         </div>
 
@@ -293,7 +343,7 @@ const ExplorePage: React.FC = () => {
         {/* Load More Button */}
         {displayedItems.length < items.length && (
           <div className="text-center pb-12">
-            <button 
+            <button
               onClick={handleLoadMore}
               className="text-(--black-color) text-lg font-medium border-b-2 border-(--black-color) hover:text-(--green-color) hover:border-(--green-color) transition-colors pb-1"
             >
@@ -305,9 +355,9 @@ const ExplorePage: React.FC = () => {
       </div>
 
       {/* Filter Sidebar Modal */}
-      <FilterSidebar 
-        isOpen={isFilterOpen} 
-        onClose={() => setIsFilterOpen(false)} 
+      <FilterSidebar
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
         filters={filters}
         setFilters={setFilters}
         onApply={handleApplyFilters}
