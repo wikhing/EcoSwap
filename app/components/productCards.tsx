@@ -74,7 +74,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
         {/* Need to link to Item Details page for each item when button for the item clicked */}
         <div className="mt-auto">
-          <Button className="text-sm md:w-auto w-full" children="View Details" variant="green" />
+          <a href={`/item_detail/${product.id}`} className="block">
+            <Button className="text-sm md:w-auto w-full" children="View Details" variant="green" />
+          </a>
         </div>
       </div>
     </div>
