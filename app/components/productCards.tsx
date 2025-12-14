@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import Button from "./button";
 
 interface Product {
-  id: number;
+  id: number | string;
   title: string;
   images: string[];
   type: 'Donate' | 'Swap';
@@ -19,13 +19,13 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
   useEffect(() => {
     if (product.images.length <= 1) return;
-    
+
     const intervalId = setInterval(() => {
       setCurrentImageIndex((prev) => (prev + 1) % product.images.length);
     }, 3000);
 
     return () => clearInterval(intervalId);
-    
+
   }, [product.images.length]);
 
   return (
@@ -38,24 +38,24 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             <Recycle size={24} className="text-(--green-color) fill-current" />
           )}
         </div>
-        <div 
+        <div
           className="absolute inset-0 flex h-full w-full transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
         >
           {product.images.map((img, index) => (
             <div key={index} className="shrink-0 w-full h-full flex items-center justify-center p-6">
-               <img 
-                src={img} 
-                alt={`${product.title} view ${index + 1}`} 
+              <img
+                src={img}
+                alt={`${product.title} view ${index + 1}`}
                 className="max-w-full max-h-full object-contain mix-blend-multiply"
               />
             </div>
           ))}
         </div>
-        
+
         <div className="absolute bottom-2 left-0 w-full flex justify-center gap-1.5 z-20">
           {product.images.length > 1 && product.images.map((_, idx) => (
-            <div 
+            <div
               key={idx}
               className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentImageIndex ? 'w-4 bg-(--green-color)' : 'w-1.5 bg-gray-300'}`}
             />
@@ -70,7 +70,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
 
         {/* Need to link to Item Details page for each item when button for the item clicked */}
         <div className="mt-auto">
-          <Button className="text-sm md:w-auto w-full" children="View Details" variant="green"/>
+          <a href={`/item_detail/${product.id}`} className="block">
+            <Button className="text-sm md:w-auto w-full" children="View Details" variant="green" />
+          </a>
         </div>
       </div>
     </div>
