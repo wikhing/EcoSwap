@@ -20,11 +20,53 @@ interface Listing {
   item_images: ItemImage[];
 }
 
+const RecentListingCard: React.FC<{ item: Listing }> = ({ item }) => {
+  const imageUrl = item.item_images?.[0]?.url || '/placeholder.png';
+  const [isHovering, setIsHovering] = useState<boolean>(false);
+
+  return (
+    <div key={item.id} className={`${isHovering ? 'w-90' : 'w-40'} grow bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex gap-4 transition-all duration-300`}
+      onMouseOver={() => setIsHovering(true)} onMouseOut={() => setIsHovering(false)}
+    >
+      {/* Item Image Container */}
+      <div className={`relative ${isHovering ? 'w-32' : 'w-full'} h-full bg-gray-100 rounded-md overflow-hidden grow shrink-0 transition-all duration-300`}>
+        <Image
+          src={imageUrl}
+          alt={item.title}
+          fill
+          className="object-contain p-1"
+        />
+      </div>
+  
+      {/* Item Details */}
+      <div className={`${isHovering ? '' : 'hidden'} flex flex-col grow py-1 overflow-x-hidden`}>
+        <h4 className={`${isHovering ? 'w-90' : 'w-0'} grow font-bold text-(--black-color) leading-tight mb-1 mr-4`}>{item.title}</h4>
+        <div className="mb-auto">
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${item.status === 'active'
+            ? 'bg-[#E6F0E6] text-(--green-color)'
+            : 'bg-gray-200 text-gray-600'
+            }`}>
+            {item.status}
+          </span>
+        </div>
+        
+        <div className="grow">
+            <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-(--green-color)">Edit</button>
+            <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-(--green-color)">Complete</button>
+            <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-red-600">Remove</button>
+        </div>
+        
+      </div>
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
+  const [swaps, setSwaps] = useState(0); 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -79,6 +121,10 @@ export default function ProfilePage() {
     return 'User';
   };
 
+  const updateTab = () => {
+    alert('Tab navigation is not implemented in this demo.');
+  }
+
   const stats = [
     { label: "ITEMS DONATED", value: listings.filter(l => l.status === 'active').length.toString() },
     { label: "SUCCESSFUL SWAPS", value: "0" },
@@ -112,11 +158,11 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen py-10 px-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 md:grid-rows-9 gap-8">
 
         {/* --- LEFT COLUMN: Profile Sidebar --- */}
-        <div className="md:col-span-1">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center text-center">
+        <div className="md:col-span-1 md:row-span-6">
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col place-content-center items-center text-center h-full">
 
             {/* Profile Image */}
             <div className="relative w-32 h-32 mb-4">
@@ -138,7 +184,7 @@ export default function ProfilePage() {
             </button>
 
             {/* Meta Info */}
-            <div className="w-full space-y-4 text-left">
+            <div className="space-y-4 text-left">
               <div className="flex items-center text-(--dark-grey-color) text-sm">
                 <Mail className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
                 <span className="truncate">{user.email}</span>
@@ -155,101 +201,70 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* --- RIGHT COLUMN: Main Content --- */}
-        <div className="md:col-span-3 space-y-6">
+        {/* LEFT COLUMN: HOW MANY SWAP LEFT */}
+        <div className='md:col-span-1 md:row-span-3 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center text-center h-full items-center justify-center'>
+          <h3 className="text-lg font-bold text-(--black-color) mb-2">Swaps Left This Month</h3>
+          <span className="text-4xl font-bold text-(--green-color)">{swaps}</span>
+          <p className="text-sm text-(--dark-grey-color) mt-2">Renewal on 1st of next month</p>
+        </div>
 
-          {/* Tabs Navigation */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-4">
+        {/* Tabs Navigation */}
+          <div className="md:col-start-2 md:col-span-3 md:row-span-1 bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-4 h-full">
             <div className="flex space-x-8 overflow-x-auto">
-              <button className="text-(--green-color) font-bold border-b-2 border-(--green-color) pb-1 whitespace-nowrap">Overview</button>
-              <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Listings</button>
-              <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Donations</button>
-              <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Impact</button>
+              <button className="text-(--green-color) font-bold border-b-2 border-(--green-color) pb-1 whitespace-nowrap" onClick={updateTab}>Overview</button>
+              <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap" onClick={updateTab}>My Listings</button>
+              <Link href='impact' className="self-center text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Impact</Link>
             </div>
           </div>
 
           {/* Stats Cards Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center h-32">
-                <span className="text-3xl font-bold text-(--black-color) mb-1">{stat.value}</span>
-                <span className="text-xs font-bold text-(--dark-grey-color) uppercase tracking-wider">{stat.label}</span>
+        <div className="md:col-start-2 md:col-span-3 md:row-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
+          {stats.map((stat, index) => (
+            <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center h-full">
+              <span className="text-3xl font-bold text-(--black-color) mb-1">{stat.value}</span>
+              <span className="text-xs font-bold text-(--dark-grey-color) uppercase tracking-wider">{stat.label}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Recent Listings Section */}
+        <div className='md:col-start-2 md:col-span-3 md:row-span-3 md:row-start-4 h-full'>
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-bold text-(--black-color)">Recent Listings</h3>
+            <button className="text-(--green-color) text-sm font-bold hover:underline" onClick={updateTab}>View All</button>
+          </div>
+      
+          {listings.length === 0 ? (
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center h-9/11 flex flex-col items-center justify-center">
+              <p className="text-(--dark-grey-color) mb-4">You haven&apos;t listed any items yet.</p>
+              <Link href="/list" className="bg-(--green-color) text-white px-6 py-2 rounded-lg font-bold inline-block">
+                List Your First Item
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-row gap-6 h-9/11">
+              {listings.map((item) => {              
+                return (
+                  <RecentListingCard key={item.id} item={item} />
+                );
+              })}
+            </div>
+          )}
+        </div>
+        
+        {/* Achievements Section */}
+        <div className="md:col-start-2 md:col-span-3 md:row-span-3 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+          <h3 className="text-lg font-bold text-(--black-color) mb-6">Achievements & Badges</h3>
+          <div className="flex flex-wrap gap-8">
+            {badges.map((badge) => (
+              <div key={badge.id} className="flex flex-col items-center text-center">
+                <div className={`w-16 h-16 rounded-full border-2 ${badge.received ? "border-(--green-color) bg-[#E6F0E6]" : "border-[#CCCCCC] border-dashed"} flex items-center justify-center mb-2 ${badge.received ? '' : 'opacity-50'}`}>
+                  {badge.icon}
+                </div>
+                <span className="text-xs font-bold text-(--black-color) w-20 leading-tight">{badge.title}</span>
               </div>
             ))}
           </div>
-
-          {/* Recent Listings Section */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-(--black-color)">Recent Listings</h3>
-              <Link href="#" className="text-(--green-color) text-sm font-bold hover:underline">View All</Link>
-            </div>
-
-            {listings.length === 0 ? (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center">
-                <p className="text-(--dark-grey-color) mb-4">You haven&apos;t listed any items yet.</p>
-                <Link href="/share" className="bg-(--green-color) text-white px-6 py-2 rounded-lg font-bold inline-block">
-                  Share Your First Item
-                </Link>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {listings.map((item) => {
-                  const imageUrl = item.item_images?.[0]?.url || '/placeholder.png';
-
-                  return (
-                    <div key={item.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex gap-4">
-                      {/* Item Image Container */}
-                      <div className="relative w-24 h-32 shrink-0 bg-gray-100 rounded-md overflow-hidden">
-                        <Image
-                          src={imageUrl}
-                          alt={item.title}
-                          fill
-                          className="object-contain p-1"
-                        />
-                      </div>
-
-                      {/* Item Details */}
-                      <div className="flex flex-col grow py-1">
-                        <h4 className="font-bold text-(--black-color) leading-tight mb-1">{item.title}</h4>
-                        <div className="mb-auto">
-                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${item.status === 'active'
-                            ? 'bg-[#E6F0E6] text-(--green-color)'
-                            : 'bg-gray-200 text-gray-600'
-                            }`}>
-                            {item.status}
-                          </span>
-                        </div>
-
-                        {/* Action Links */}
-                        <div className="flex space-x-4 mt-2 text-sm text-(--dark-grey-color) font-medium">
-                          <button className="hover:text-(--green-color)">Edit</button>
-                          <span className="text-gray-300">|</span>
-                          <button className="hover:text-red-600">Remove</button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Achievements Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-            <h3 className="text-lg font-bold text-(--black-color) mb-6">Achievements & Badges</h3>
-            <div className="flex flex-wrap gap-8">
-              {badges.map((badge) => (
-                <div key={badge.id} className="flex flex-col items-center text-center">
-                  <div className={`w-16 h-16 rounded-full border-2 ${badge.received ? "border-(--green-color) bg-[#E6F0E6]" : "border-[#CCCCCC] border-dashed"} flex items-center justify-center mb-2 ${badge.received ? '' : 'opacity-50'}`}>
-                    {badge.icon}
-                  </div>
-                  <span className="text-xs font-bold text-(--black-color) w-20 leading-tight">{badge.title}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
         </div>
       </div>
     </div>

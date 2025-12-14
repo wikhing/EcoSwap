@@ -16,7 +16,6 @@ interface Product {
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     if (product.images.length <= 1) return;
@@ -30,10 +29,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   }, [product.images.length]);
 
   return (
-    <div className="bg-white min-w-2xs rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col overflow-hidden group w-full"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+    <div className="bg-white min-w-0 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col overflow-hidden group w-full h-full">
       <div className="relative h-48 w-full p-4">
         <div className="absolute top-2 right-2 bg-white/80 backdrop-blur-sm p-1.5 rounded-full shadow-sm z-10">
           {product.type === 'Donate' ? (

@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   
   const variants = {
     green: "bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) rounded-full py-2 px-6",
-    white: "bg-white border border-white text-(--green-color) hover:bg-(--green-color) hover:text-white rounded-full py-2 px-6",
+    white: "bg-white border-2 border-(--green-color) text-(--green-color) hover:bg-(--green-color) hover:text-white rounded-full py-2 px-6",
     toggle: `rounded-full py-3 px-8 text-lg shadow-sm flex gap-2 items-center ${active ? 'bg-(--green-color) text-white' : 'bg-white text-(--green-color) hover:bg-gray-50'}`
   };
 

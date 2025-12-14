@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
 import Hero from '../components/hero';
 import ProductCard from '../components/productCards';
@@ -176,6 +177,8 @@ const FilterSidebar = ({
 };
 
 const ExplorePage: React.FC = () => {
+  const searchParams = useSearchParams();
+
   const [items, setItems] = useState<Product[]>([]);
   const [displayedItems, setDisplayedItems] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -183,10 +186,16 @@ const ExplorePage: React.FC = () => {
   const itemsPerPage = 16;
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(() => searchParams.get('search') ?? '');
   const [activeTab, setActiveTab] = useState<'All' | 'Donate' | 'Swap'>('All');
   const [filters, setFilters] = useState<FilterState>({ categories: [], conditions: [] });
   const [appliedFilters, setAppliedFilters] = useState<FilterState>({ categories: [], conditions: [] });
+
+  // Sync search query from URL (e.g., when routed from another page)
+  useEffect(() => {
+    const param = searchParams.get('search') ?? '';
+    setSearchQuery(param);
+  }, [searchParams]);
 
   useEffect(() => {
     setIsLoading(true);
