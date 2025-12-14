@@ -6,6 +6,7 @@ import { Mail, Calendar, MapPin, Trophy, Sprout, Recycle } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
+import { title } from 'process';
 
 interface ItemImage {
   id: string;
@@ -61,6 +62,43 @@ const RecentListingCard: React.FC<{ item: Listing }> = ({ item }) => {
   );
 }
 
+const EcoScoreChart = ({ swaps }: { swaps: number }) => {
+  const radius = 50;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (swaps / 10) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center w-40 h-40">
+      <svg className="transform -rotate-90 w-full h-full" viewBox="0 0 120 120">
+        <circle
+          cx="60"
+          cy="60"
+          r={radius}
+          stroke="#e5e7eb"
+          strokeWidth="12"
+          fill="transparent"
+        />
+        <circle
+          cx="60"
+          cy="60"
+          r={radius}
+          stroke="#15803d" 
+          strokeWidth="12"
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+          className="transition-all duration-1000 ease-out"
+        />
+      </svg>
+      <div className="absolute flex flex-col items-center">
+        <span className="text-3xl font-bold text-green-800">{swaps}/10</span>
+      </div>
+    </div>
+  );
+};
+
+
 export default function ProfilePage() {
   const supabase = createClient();
   const [user, setUser] = useState<User | null>(null);
@@ -70,6 +108,28 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const fetchUserData = async () => {
+
+      const mockListings = [
+        {
+          id: 1,
+          title: "Eco-Friendly Backpack",
+          status: "active",
+          created_at: "2024-08-01T10:00:00Z",
+          item_images: [
+            { id: "img1", url: "/items/backpack.jpg" }
+          ]
+        },
+        {
+          id: 2,
+          title: "Reusable Water Bottle",
+          status: "active",
+          created_at: "2024-07-25T14:30:00Z",
+          item_images: [
+            { id: "img2", url: "/items/water_bottle.jpg" }
+          ]
+        }
+      ]
+
       // Get current user
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       setUser(currentUser);
@@ -158,7 +218,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen py-10 px-4">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 md:grid-rows-9 gap-8">
+      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-4 md:grid-rows-10 gap-8">
 
         {/* --- LEFT COLUMN: Profile Sidebar --- */}
         <div className="md:col-span-1 md:row-span-6">
@@ -202,9 +262,9 @@ export default function ProfilePage() {
         </div>
 
         {/* LEFT COLUMN: HOW MANY SWAP LEFT */}
-        <div className='md:col-span-1 md:row-span-3 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center text-center h-full items-center justify-center'>
+        <div className='md:col-span-1 md:row-span-4 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-10 flex flex-col items-center text-center h-full justify-center'>
           <h3 className="text-lg font-bold text-(--black-color) mb-2">Swaps Left This Month</h3>
-          <span className="text-4xl font-bold text-(--green-color)">{swaps}</span>
+          <EcoScoreChart swaps={swaps} />
           <p className="text-sm text-(--dark-grey-color) mt-2">Renewal on 1st of next month</p>
         </div>
 
@@ -235,14 +295,14 @@ export default function ProfilePage() {
           </div>
       
           {listings.length === 0 ? (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center h-9/11 flex flex-col items-center justify-center">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center h-19/23 flex flex-col items-center justify-center">
               <p className="text-(--dark-grey-color) mb-4">You haven&apos;t listed any items yet.</p>
               <Link href="/list" className="bg-(--green-color) text-white px-6 py-2 rounded-lg font-bold inline-block">
                 List Your First Item
               </Link>
             </div>
           ) : (
-            <div className="flex flex-row gap-6 h-9/11">
+            <div className="flex flex-row gap-6 h-19/23">
               {listings.map((item) => {              
                 return (
                   <RecentListingCard key={item.id} item={item} />
@@ -253,12 +313,12 @@ export default function ProfilePage() {
         </div>
         
         {/* Achievements Section */}
-        <div className="md:col-start-2 md:col-span-3 md:row-span-3 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <div className="md:col-start-2 md:col-span-3 md:row-span-4 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-8 h-full">
           <h3 className="text-lg font-bold text-(--black-color) mb-6">Achievements & Badges</h3>
-          <div className="flex flex-wrap gap-8">
+          <div className="flex flex-row gap-8 h-4/5 items-center">
             {badges.map((badge) => (
               <div key={badge.id} className="flex flex-col items-center text-center">
-                <div className={`w-16 h-16 rounded-full border-2 ${badge.received ? "border-(--green-color) bg-[#E6F0E6]" : "border-[#CCCCCC] border-dashed"} flex items-center justify-center mb-2 ${badge.received ? '' : 'opacity-50'}`}>
+                <div className={`w-24 h-24 rounded-full border-2 ${badge.received ? "border-(--green-color) bg-[#E6F0E6]" : "border-[#CCCCCC] border-dashed"} flex items-center justify-center mb-2 ${badge.received ? '' : 'opacity-50'}`}>
                   {badge.icon}
                 </div>
                 <span className="text-xs font-bold text-(--black-color) w-20 leading-tight">{badge.title}</span>

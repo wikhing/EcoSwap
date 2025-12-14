@@ -138,6 +138,7 @@ export default function ImpactTracker() {
                     <select 
                         value={selectedYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
+                        aria-label="Select year"
                         className="block w-full pl-3 pr-8 py-1 text-xs font-bold text-green-700 bg-green-50 border border-green-200 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 cursor-pointer appearance-none"
                     >
                         <option value="2024">2024</option>
