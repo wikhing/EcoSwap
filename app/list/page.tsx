@@ -51,7 +51,7 @@ const Share: React.FC = () => {
   return (
     <div className="min-h-screen pb-20">
 
-      <Hero title='Share Your Item' subtitle='Give what you don&apos;t need, help someone who does.'/>
+      <Hero title='List Your Item' subtitle='Give what you don&apos;t need, help someone who does.'/>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -84,8 +84,6 @@ const Share: React.FC = () => {
               {images.length > 0 && (
                 <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4">
                   {images.map((imgObj, index) => (
-                    // Using index as key is acceptable here for simple lists, 
-                    // but using preview URL is safer for re-ordering
                     <div key={imgObj.preview} className="relative group h-32 w-full">
                       <img
                         src={imgObj.preview}
@@ -226,7 +224,7 @@ const Share: React.FC = () => {
               {/* Submit Button */}
               <div className="pt-12 flex justify-center">
                 <button className="bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) text-2xl font-bold py-2 px-12 rounded-full shadow-lg transition-colors">
-                  Submit Donation
+                  Submit Now
                 </button>
               </div>
 

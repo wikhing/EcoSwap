@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
                 About Us
               </Link>
             </li>
-            <li><Link href="/impact" className="hover:text-[#81C784]">SDG Info</Link></li>
+            <li><Link href="/community" className="hover:text-[#81C784]">SDG Info</Link></li>
             <li><Link href="/contact" className="hover:text-[#81C784]">Contact</Link></li>
           </ul>
         </div>

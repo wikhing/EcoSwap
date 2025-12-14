@@ -8,7 +8,7 @@ import { useState } from 'react';
 const navLinks = [
     { name: 'Home', href: '/home' },
     { name: 'Explore', href: '/explore' }, 
-    { name: 'Share', href: '/share' },
+    { name: 'List', href: '/list' },
     { name: 'Impact', href: '/impact' },
     { name: 'Community', href: '/community' },
 ];
@@ -17,6 +17,8 @@ export default function Header() {
     const [isOpen, setIsOpen] = useState(false);
     
     const router = useRouter();
+
+    let isLoggedIn = false;
 
     const handleLogout = (sectionId: string) => {
 
@@ -80,12 +82,16 @@ export default function Header() {
                             </Link>
                     
                             {/* check user authentication status(loggedIn?) to show/hide notification and profile icons */}
-                            <Link className="hidden" href="notification">
-                                <img src="/assets/notification_icon.svg" alt="Notification" />
-                            </Link>
-                            <Link className="hidden" href="profile">
-                                <img src="/assets/profile_icon.svg" alt="Profile" />
-                            </Link>
+                            {isLoggedIn && (
+                                <>
+                                <Link className="hidden" href="notification">
+                                    <img src="/assets/notification_icon.svg" alt="Notification" />
+                                </Link>
+                                <Link className="hidden" href="profile">
+                                    <img src="/assets/profile_icon.svg" alt="Profile" />
+                                </Link>
+                                </>
+                            )}
                         </nav>
                         :
                         <button onClick={() => handleLogout('')} className="w-30 h-fit text-center text-(--green-color) font-bold px-6 py-1 lg:my-0 rounded-full border-2 border-(--green-color) bg-white hover:bg-(--green-color) hover:text-white transition cursor-pointer">
