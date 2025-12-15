@@ -1,16 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import StatCard from "../components/statCard";
 
 // --- Types ---
 
-interface StatCardProps {
-  label: string;
-  value: string;
-  subtext: string;
-  trend?: string;
-  isPositive?: boolean;
-}
+
 
 interface AchievementProps {
   title: string;
@@ -20,24 +15,6 @@ interface AchievementProps {
 }
 
 // --- Components ---
-
-// 1. Top Stat Card
-const StatCard: React.FC<StatCardProps> = ({ label, value, subtext, trend, isPositive }) => {
-  return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border border-b-4 border-b-[#4CAF50] border-gray-100 flex flex-col items-center text-center hover:shadow-md transition-shadow">
-      <h3 className="text-gray-600 font-bold text-sm mb-2">{label}</h3>
-      <div className="text-3xl font-extrabold text-gray-900 mb-1">{value}</div>
-      {trend && (
-        <p className={`text-xs font-medium mb-1 ${isPositive ? 'text-[#008000]' : 'text-red-500'}`}>
-          {isPositive ? '↑' : '↓'} {trend}
-        </p>
-      )}
-      <p className="text-xs text-gray-500 mt-auto">{subtext}</p>
-    </div>
-  );
-};
-
-// 2. Achievement Card
 const AchievementCard: React.FC<AchievementProps> = ({ title, description, icon, isUnlocked = true }) => {
   return (
     <div className={`bg-white p-4 rounded-xl shadow-sm border-2 ${isUnlocked ? 'border-[#D4AF37] bg-white' : 'border-gray-100 bg-gray-50'} flex flex-col items-center text-center h-full`}>
@@ -95,12 +72,11 @@ export default function ImpactTracker() {
 
         {/* Top Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <StatCard label="CO₂ Saved Today" value="0.5 kg" trend="+15% from yesterday" isPositive={true} subtext="" />
-          <StatCard label="Total CO₂ Saved" value="12.5 kg" subtext="Equivalent to 6 trees planted" />
-          <StatCard label="Items Reused" value="8" subtext="3 Donated, 5 Swapped" />
-          <StatCard label="Community Score" value="450" subtext="Green Points Earned" />
+          <StatCard label="CO₂ Saved Today" value="0.5 kg" trend="+15% from yesterday" isPositive={true} subtext="" accentColor="border-b-green-500" />
+          <StatCard label="Total CO₂ Saved" value="12.5 kg" subtext="Equivalent to 6 trees planted" accentColor="border-b-blue-400" />
+          <StatCard label="Items Reused" value="8" subtext="3 Donated, 5 Swapped" accentColor="border-b-orange-400"/>
+          <StatCard label="Community Score" value="450" subtext="Green Points Earned" accentColor="border-b-yellow-400" />
         </div>
-
         {/* Main Dashboard Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           
@@ -138,6 +114,7 @@ export default function ImpactTracker() {
                     <select 
                         value={selectedYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
+                        aria-label="Select year"
                         className="block w-full pl-3 pr-8 py-1 text-xs font-bold text-green-700 bg-green-50 border border-green-200 rounded-md focus:outline-none focus:ring-1 focus:ring-green-500 cursor-pointer appearance-none"
                     >
                         <option value="2024">2024</option>

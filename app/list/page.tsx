@@ -1,26 +1,28 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { X, CheckCircle2, AlertTriangle, Clock, Ban, Leaf, Recycle, List, HeartHandshake, ShieldCheck, Image as ImageIcon } from 'lucide-react';
+import { X, CheckCircle2, AlertTriangle, Clock, Ban, Leaf, Recycle, List as ListIcon, HeartHandshake, ShieldCheck, Image as ImageIcon } from 'lucide-react';
 import Hero from '../components/hero';
 import { createClient } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
-const Share: React.FC = () => {
+const List: React.FC = () => {
   const supabase = createClient();
   const router = useRouter();
 
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
-  const [type, setType] = useState<'donate' | 'swap'>('donate');
-  const [itemCategory, setItemCategory] = useState('');
   const [title, setTitle] = useState('');
-  const [condition, setCondition] = useState('');
+  const [condition, setCondition] = useState<typeof conditions[number]>('');
+  const [itemCategory, setItemCategory] = useState('');
+  const [weight, setWeight] = useState('');
   const [description, setDescription] = useState('');
+  const [listType, setListType] = useState<'donate' | 'swap'>('donate');
   const [pickupMethod, setPickupMethod] = useState<'pickup' | 'dropoff'>('pickup');
   const [campusLocation, setCampusLocation] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const categories = ["Clothing", "Books", "Electronics", "Home Goods", "Stationery", "Others"];
+  const categories = ["Clothing x3.0/kg", "Books x1.5/kg", "Electronics x7.5/kg", "Home Goods x6.0/kg", "Stationery x3.5/kg", "Others"];
+  const conditions = ["Brand New", "Like New", "Lightly Used", "Well Used", "Heavily Used"];
 
   useEffect(() => {
     return () => {
@@ -56,17 +58,49 @@ const Share: React.FC = () => {
   const handleSubmit = async () => {
     setError('');
 
+    console.log({
+      title,
+      condition,
+      itemCategory,
+      weight,
+      description,
+      listType,
+      pickupMethod,
+      campusLocation,
+      images
+    });
+
     // Validation
     if (!title.trim()) {
       setError('Please enter an item title');
+      return;
+    }
+    if (!condition) {
+      setError('Please select item condition');
       return;
     }
     if (!itemCategory) {
       setError('Please select a category');
       return;
     }
-    if (!condition) {
-      setError('Please select item condition');
+    if(!weight.trim()) {
+      setError('Please enter the item weight');
+      return;
+    }
+    if (!description.trim()) {
+      setError('Please enter an item description');
+      return;
+    }
+    if(!listType) {
+      setError('Please select a listing type');
+      return;
+    }
+    if(!pickupMethod) {
+      setError('Please select a pickup/drop-off method');
+      return;
+    }
+    if(!campusLocation.trim()) {
+      setError('Please enter your campus location');
       return;
     }
     if (images.length === 0) {
@@ -81,7 +115,7 @@ const Share: React.FC = () => {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
 
       if (userError || !user) {
-        setError('You must be logged in to share an item');
+        setError('You must be logged in to list an item');
         setIsSubmitting(false);
         return;
       }
@@ -92,10 +126,11 @@ const Share: React.FC = () => {
         .insert({
           user_id: user.id,
           title: title.trim(),
-          type: type,
-          category: itemCategory,
           condition: condition,
+          category: itemCategory,
+          weight: weight,
           description: description.trim(),
+          type: listType,
           pickup_method: pickupMethod,
           campus_location: campusLocation.trim(),
           status: 'active'
@@ -154,7 +189,7 @@ const Share: React.FC = () => {
       }
 
       // Success - redirect to home or items page
-      alert('Item shared successfully!');
+      alert('Item listed successfully!');
       router.push('/home');
 
     } catch (err) {
@@ -179,7 +214,12 @@ const Share: React.FC = () => {
       <Hero title='List Your Item' subtitle='Give what you don&apos;t need, help someone who does.'/>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div className='bg-white rounded-2xl p-8 mb-8'>
+          <h2 className='text-2xl text-center text-(--green-color) font-bold mb-2'>CO₂ Description</h2>
+          <p className='text-justify mb-2'>Emission factors were estimated using average lifecycle data from referenced studies and LCA databases such as DEFRA, Ecoinvent, and IPCC guidelines. A single representative value per category was used to simplify calculation for university-level analysis</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-11 gap-12">
 
           {/* Left Side: Form */}
           <div className="lg:col-span-7 space-y-8">
@@ -239,49 +279,44 @@ const Share: React.FC = () => {
             {/* Form Fields */}
             <div className="space-y-8 text-(--black-color)">
 
-              {/* Item Title */}
-              <div className="flex items-center gap-4">
-                <label className="font-bold text-lg min-w-24">Item Title:</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="flex-1 bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
-                  aria-label="Item Title"
-                />
+              {/* Item Name */}
+              <div className="flex flex-col items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24">Item Name:</label>
+                <div className='bg-white rounded-2xl px-8 pb-4 pt-2 w-full'>
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    className="flex-1 w-full bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
+                    aria-label="Item Title"
+                  />
+                </div>
               </div>
 
-              {/* Type */}
-              <div className="flex items-center gap-4">
-                <label className="font-bold text-lg min-w-24">Type:</label>
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => setType('donate')}
-                    className={`px-6 py-1.5 rounded-full font-medium transition ${type === 'donate'
-                        ? 'bg-(--green-color) border-2 border-white text-white'
-                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
-                      }`}
-                    type="button"
-                  >
-                    Donate
-                  </button>
-                  <button
-                    onClick={() => setType('swap')}
-                    className={`px-6 py-1.5 rounded-full font-medium transition ${type === 'swap'
-                        ? 'bg-(--green-color) border-2 border-white text-white'
-                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
-                      }`}
-                    type="button"
-                  >
-                    Swap
-                  </button>
+              {/* Condition */}
+              <div className="flex flex-col items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24 mt-1">Item Condition:</label>
+                <div className="bg-white rounded-2xl flex flex-row space-x-3 p-2 w-full justify-center">
+                  <span className='mx-auto self-center text-(--green-color) text-lg font-bold' >New</span>
+                  {conditions.map((option) => (
+                    <label key={option} className={`${condition === option ? 'w-40 bg-(--green-color) text-white' : 'w-4 bg-white'} px-4 py-2 h-10 border-4 border-(--green-color) hover:bg-(--green-color) rounded-full flex items-center gap-3 overflow-x-hidden overflow-y-hidden cursor-pointer transition-all duration-300`}>
+                      <button
+                        name="condition"
+                        value={option}
+                        onClick={() => setCondition(option)}
+                        className="hidden"
+                      />
+                      <span className={`${condition === option ? 'w-full' : 'w-0'} text-center text-lg transition-all duration-300 overflow-clip`}>{option}</span>
+                    </label>
+                  ))}
+                  <span className='mx-auto self-center text-(--green-color) text-lg font-bold' >Used</span>
                 </div>
               </div>
 
               {/* Category Selection */}
-              <div className="flex items-start gap-4">
-                <label className="font-bold text-lg min-w-24 mt-2">Category:</label>
-                <div className="flex-1">
+              <div className="flex flex-col items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24 mt-2">Item Category(/kg CO₂ Saved):</label>
+                <div className="flex-1 w-full">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {categories.map((cat) => (
                       <button
@@ -300,30 +335,24 @@ const Share: React.FC = () => {
                 </div>
               </div>
 
-              {/* Condition */}
-              <div className="flex items-start gap-4">
-                <label className="font-bold text-lg min-w-24 mt-1">Condition:</label>
-                <div className="space-y-3">
-                  {['Like New', 'Good', 'Used'].map((option) => (
-                    <label key={option} className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="radio"
-                        name="condition"
-                        value={option}
-                        checked={condition === option}
-                        onChange={(e) => setCondition(e.target.value)}
-                        className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)"
-                      />
-                      <span className="text-lg">{option}</span>
-                    </label>
-                  ))}
+              {/* Weight */}
+              <div className="flex flex-col items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24">Item Weight(kg):</label>
+                <div className='bg-white rounded-2xl px-8 pb-4 pt-2 w-full'>
+                  <input
+                    type="text"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    className="flex-1 w-full bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
+                    aria-label="Item Weight"
+                  />
                 </div>
               </div>
 
               {/* Multi-line Description */}
-              <div className="flex items-start gap-4">
-                <label className="font-bold text-lg min-w-24 mt-2">Description:</label>
-                <div className="flex-1 relative">
+              <div className="flex flex-col items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24 mt-2">Item Description:</label>
+                <div className="flex-1 relative bg-white rounded-2xl px-8 pb-4 pt-2 w-full">
                   {/* Single Textarea with notebook line styling */}
                   <textarea
                     rows={4}
@@ -336,45 +365,72 @@ const Share: React.FC = () => {
                 </div>
               </div>
 
-              {/* Pickup / Drop-off */}
-              <div className="flex items-start gap-4 pt-4">
-                <label className="font-bold text-lg min-w-24 block mb-2">Pickup / Drop-off:</label>
+              {/* Type */}
+              <div className="flex items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24 w-50">Type of Listing:</label>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setListType('donate')}
+                    className={`px-6 py-1.5 rounded-full font-medium transition ${listType === 'donate'
+                        ? 'bg-(--green-color) border-2 border-white text-white'
+                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      }`}
+                    type="button"
+                  >
+                    Donate
+                  </button>
+                  <button
+                    onClick={() => setListType('swap')}
+                    className={`px-6 py-1.5 rounded-full font-medium transition ${listType === 'swap'
+                        ? 'bg-(--green-color) border-2 border-white text-white'
+                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      }`}
+                    type="button"
+                  >
+                    Swap
+                  </button>
+                </div>
               </div>
-              <div className="flex gap-12 ml-34 -mt-6">
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="pickup"
-                    checked={pickupMethod === 'pickup'}
-                    onChange={() => setPickupMethod('pickup')}
-                    className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)"
-                  />
-                  <span className="text-lg">Pickup</span>
-                </label>
-                <label className="flex items-center gap-3 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="dropoff"
-                    checked={pickupMethod === 'dropoff'}
-                    onChange={() => setPickupMethod('dropoff')}
-                    className="w-5 h-5 text-(--green-color) focus:ring-(--green-color)"
-                  />
-                  <span className="text-lg">Drop-off</span>
-                </label>
+
+              {/* Pickup / Drop-off */}
+              <div className="flex items-center gap-2">
+                <label className="self-start font-bold text-lg min-w-24 w-50">Pickup / Drop-off:</label>
+                <div className="flex gap-4">
+                  <button
+                    onClick={() => setPickupMethod('pickup')}
+                    className={`px-6 py-1.5 rounded-full font-medium transition ${pickupMethod === 'pickup'
+                        ? 'bg-(--green-color) border-2 border-white text-white'
+                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      }`}
+                    type="button"
+                  >
+                    Pickup
+                  </button>
+                  <button
+                    onClick={() => setPickupMethod('dropoff')}
+                    className={`px-6 py-1.5 rounded-full font-medium transition ${pickupMethod === 'dropoff'
+                        ? 'bg-(--green-color) border-2 border-white text-white'
+                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      }`}
+                    type="button"
+                  >
+                    Drop-off
+                  </button>
+                </div>
               </div>
 
               {/* Campus Location */}
-              <div className="flex items-center gap-4 pt-6">
-                <label className="font-bold text-lg whitespace-nowrap">Campus Location:</label>
-                <input
-                  type="text"
-                  value={campusLocation}
-                  onChange={(e) => setCampusLocation(e.target.value)}
-                  className="flex-1 bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
-                  aria-label='Campus Location'
-                />
+              <div className="flex flex-col items-start gap-2">
+                <label className="self-start font-bold text-lg whitespace-nowrap">Campus Location:</label>
+                <div className='bg-white rounded-2xl px-8 pb-4 pt-2 w-full'>
+                  <input
+                    type="text"
+                    value={weight}
+                    onChange={(e) => setCampusLocation(e.target.value)}
+                    className="flex-1 w-full bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
+                    aria-label="Item Weight"
+                  />
+                </div>
               </div>
 
               {/* Submit Button */}
@@ -384,7 +440,7 @@ const Share: React.FC = () => {
                   disabled={isSubmitting}
                   className="bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) text-2xl font-bold py-2 px-12 rounded-full shadow-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Submitting...' : (type === 'donate' ? 'Submit Donation' : 'Submit Swap')}
+                  {isSubmitting ? 'Submitting...' : (listType === 'donate' ? 'Submit Donation' : 'Submit Swap')}
                 </button>
               </div>
 
@@ -392,20 +448,20 @@ const Share: React.FC = () => {
           </div>
 
           {/* Right Side: Sticky Guidelines */}
-          <div className="lg:col-span-5 relative">
+          <div className="lg:col-span-4 relative">
             <div className="sticky top-10 space-y-8 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
 
               {/* Donation Guidelines */}
-              <section>
+              <section className='justify-self-center mr-4 mb-10'>
                 <h3 className="text-2xl font-bold text-(--black-color) mb-4 border-b-2 border-gray-300 inline-block pb-1">
                   Donation Guidelines
                 </h3>
                 <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <CheckCircle2 className="text-(--green-color)" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Clean items only</span>
                   </li>
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <div className="bg-(--black-color) text-white p-1 rounded">
                       <AlertTriangle size={20} />
                     </div>
@@ -415,16 +471,16 @@ const Share: React.FC = () => {
               </section>
 
               {/* What NOT to Donate */}
-              <section>
+              <section className='justify-self-center mr-4 mb-10'>
                 <h3 className="text-2xl font-bold text-(--black-color) mb-4 border-b-2 border-gray-300 inline-block pb-1">
                   What NOT to Donate?
                 </h3>
                 <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <Clock className="text-yellow-600" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Expired items</span>
                   </li>
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <Ban className="text-gray-700" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Damaged beyond repair</span>
                   </li>
@@ -432,42 +488,42 @@ const Share: React.FC = () => {
               </section>
 
               {/* Impact of Donating */}
-              <section>
+              <section className='justify-self-center mr-4 mb-10'>
                 <h3 className="text-2xl font-bold text-(--black-color) mb-4 border-b-2 border-gray-300 inline-block pb-1">
                   Impact of Donating
                 </h3>
                 <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <Leaf className="text-(--green-color) fill-(--green-color)" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Saves CO₂</span>
                   </li>
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <Recycle className="text-(--green-color)" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Reduces waste</span>
                   </li>
                 </ul>
               </section>
-
-              <div className="pt-6"></div>
-              <div className="bg-white rounded-3xl">
+              
+              {/* How Swapping Works */}
+              <section className='justify-self-center mr-4'>
                 <h3 className="text-2xl font-bold text-(--black-color) mb-4 border-b-2 border-gray-300 inline-block pb-1">
                   How Swapping Works
                 </h3>
                 <ul className="space-y-4">
-                  <li className="flex items-center gap-3">
-                    <List className="text-(--green-color)" size={28} />
+                  <li className="flex items-center gap-4">
+                    <ListIcon className="text-(--green-color)" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">List your item</span>
                   </li>
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <HeartHandshake className="text-(--black-color)" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Match with others</span>
                   </li>
-                  <li className="flex items-center gap-3">
+                  <li className="flex items-center gap-4">
                     <ShieldCheck className="text-(--black-color)" size={28} />
                     <span className="text-lg font-medium text-(--black-color)">Agree & meet safely</span>
                   </li>
                 </ul>
-              </div>
+              </section>
             </div>
           </div>
         </div>
@@ -476,4 +532,4 @@ const Share: React.FC = () => {
   );
 };
 
-export default Share;
+export default List;
