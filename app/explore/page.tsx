@@ -22,27 +22,27 @@ interface FilterState {
 }
 
 const MOCK_DATABASE: Product[] = [
-  { id: 1, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Home Goods", condition: "Good" },
-  { id: 2, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Electronics", condition: "Used" },
-  { id: 3, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Books", condition: "Good" },
+  { id: 1, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Home Goods", condition: "Brand New" },
+  { id: 2, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Electronics", condition: "Like New" },
+  { id: 3, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Books", condition: "Lightly Used" },
   { id: 4, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
-  { id: 5, title: "One Life Graphic T-shirt", images: ["./assets/mock_datas/mock_data5.png"], type: "Swap", category: "Clothing", condition: "Used" },
+  { id: 5, title: "One Life Graphic T-shirt", images: ["./assets/mock_datas/mock_data5.png"], type: "Swap", category: "Clothing", condition: "Like New" },
   { id: 6, title: "Wireless Mechanic Keyboard", images: ["./assets/mock_datas/mock_data6.png"], type: "Swap", category: "Electronics", condition: "Like New" },
-  { id: 7, title: "2nd Hand North Carolina Hoodie", images: ["./assets/mock_datas/mock_data7.png"], type: "Donate", category: "Clothing", condition: "Good" },
-  { id: 8, title: "IKEA Frakta Bag", images: ["./assets/mock_datas/mock_data8.png"], type: "Donate", category: "Others", condition: "Good" },
-  { id: 9, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data9.png"], type: "Swap", category: "Others", condition: "Used" },
-  { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", images: ["./assets/mock_datas/mock_data10.png"], type: "Donate", category: "Books", condition: "Good" },
+  { id: 7, title: "2nd Hand North Carolina Hoodie", images: ["./assets/mock_datas/mock_data7.png"], type: "Donate", category: "Clothing", condition: "Lightly Used" },
+  { id: 8, title: "IKEA Frakta Bag", images: ["./assets/mock_datas/mock_data8.png"], type: "Donate", category: "Others", condition: "Lightly Used" },
+  { id: 9, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data9.png"], type: "Swap", category: "Others", condition: "Like New" },
+  { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", images: ["./assets/mock_datas/mock_data10.png"], type: "Donate", category: "Books", condition: "Lightly Used" },
   { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", images: ["./assets/mock_datas/mock_data11.png"], type: "Swap", category: "Others", condition: "Like New" },
-  { id: 12, title: "Tote Bag Oura Matcha", images: ["./assets/mock_datas/mock_data12.png"], type: "Donate", category: "Clothing", condition: "Good" },
+  { id: 12, title: "Tote Bag Oura Matcha", images: ["./assets/mock_datas/mock_data12.png"], type: "Donate", category: "Clothing", condition: "Lightly Used" },
   { id: 13, title: "Rainbow Sticky Note Cube", images: ["./assets/mock_datas/mock_data13.png"], type: "Donate", category: "Stationery", condition: "Like New" },
-  { id: 14, title: "Wireless Bluetooth Headphones", images: ["./assets/mock_datas/mock_data14.png"], type: "Swap", category: "Electronics", condition: "Good" },
-  { id: 15, title: "2nd Hand Muji Desk Organiser", images: ["./assets/mock_datas/mock_data15.png"], type: "Donate", category: "Home Goods", condition: "Used" },
-  { id: 16, title: "2nd Hand Baseball Cap", images: ["./assets/mock_datas/mock_data16.png"], type: "Swap", category: "Clothing", condition: "Used" },
+  { id: 14, title: "Wireless Bluetooth Headphones", images: ["./assets/mock_datas/mock_data14.png"], type: "Swap", category: "Electronics", condition: "Heavily Used" },
+  { id: 15, title: "2nd Hand Muji Desk Organiser", images: ["./assets/mock_datas/mock_data15.png"], type: "Donate", category: "Home goods", condition: "Like New" },
+  { id: 16, title: "2nd Hand Baseball Cap", images: ["./assets/mock_datas/mock_data16.png"], type: "Swap", category: "Clothing", condition: "Brand New" },
   // ... Duplicate data to demonstrate "Load More" functionality
-  { id: 17, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Electronics", condition: "Good" },
+  { id: 17, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Electronics", condition: "Like New" },
   { id: 18, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Home Goods", condition: "Like New" },
-  { id: 19, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Others", condition: "Used" },
-  { id: 20, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Good" },
+  { id: 19, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Others", condition: "Brand New" },
+  { id: 20, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
 ];
 
 
@@ -82,8 +82,26 @@ const FilterSidebar = ({
   setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
   onApply: () => void;
 }) => {
-  const categories = ["Clothing", "Books", "Electronics", "Home Goods", "Stationery", "Others"];
-  const conditions = ["Like New", "Good", "Used"];
+  const categories = [
+    {
+      category: "Clothing",
+      co2: 3.0
+    }, {
+      category:"Books",
+      co2: 1.5
+    }, {
+      category: "Electronics",
+      co2: 75.0
+    }, {
+      category: "Home Goods",
+      co2: 6.0
+    }, {
+      category: "Stationery",
+      co2: 3.5
+    }, {
+      category: "Others"
+    }];
+  const conditions = ["Brand New", "Like New", "Lightly Used", "Well Used", "Heavily Used"];
 
   const toggleFilter = (type: 'categories' | 'conditions', value: string) => {
     setFilters(prev => {
@@ -117,19 +135,22 @@ const FilterSidebar = ({
           <h3 className="text-(--green-color) text-2xl font-bold mb-6">Category</h3>
           <div className="space-y-4">
             {categories.map((cat) => (
-              <label key={cat} className="flex items-center cursor-pointer group">
+              <label key={cat.category} className="flex items-center cursor-pointer group">
                 <div className="relative flex items-center">
                   <input
                     type="checkbox"
                     className="peer appearance-none w-6 h-6 border-2 border-gray-300 rounded bg-gray-100 checked:bg-(--green-color) checked:border-(--green-color) transition-colors"
-                    checked={filters.categories.includes(cat)}
-                    onChange={() => toggleFilter('categories', cat)}
+                    checked={filters.categories.includes(cat.category)}
+                    onChange={() => toggleFilter('categories', cat.category)}
                   />
                   <svg className="absolute w-4 h-4 text-white pointer-events-none hidden peer-checked:block left-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12"></polyline>
                   </svg>
                 </div>
-                <span className="ml-4 text-xl font-bold text-(--black-color) group-hover:text-(--green-color) transition-colors">{cat}</span>
+                <span className="ml-4 text-xl font-bold text-(--black-color) group-hover:text-(--green-color) transition-colors">{cat.category}</span>
+                <div className='ml-auto justify-end'>
+                  <p className="ml-4 text-lg font-medium text-(--gray-color)">{cat.co2 ? `x${cat.co2}/kg CO₂ saved` : 'No data'}</p>
+                </div>
               </label>
             ))}
           </div>
