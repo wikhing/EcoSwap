@@ -34,7 +34,7 @@ export default function CompleteButton({ itemId, donorId, receiverId }: Props) {
       // 2. Call the Secure Database Function
       const { data, error } = await supabase
         .rpc('claim_item_securely', {
-          p_item_id: Number(itemId),
+          p_item_id: itemId,  // Pass as-is (UUID string)
           p_receiver_id: receiverId,
           p_donor_id: donorId
         });

@@ -19,12 +19,24 @@ interface Item {
     description: string;
     owner_id: string;
     status?: string;
+    weight?: number;
+    itemCategory?: string;
     owner: {
         name: string;
         joined: string;
         avatar: string;
     };
 }
+
+// CO2 multiplier helper function
+const getCO2Multiplier = (category: string): number => {
+    if (category?.toLowerCase().includes('clothing')) return 3.0;
+    if (category?.toLowerCase().includes('books')) return 1.5;
+    if (category?.toLowerCase().includes('electronics')) return 7.5;
+    if (category?.toLowerCase().includes('home goods')) return 6.0;
+    if (category?.toLowerCase().includes('stationery')) return 3.5;
+    return 2.0; // Default for 'Others'
+};
 
 // --- Helper Components ---
 const WhatsAppIcon = () => (
@@ -95,14 +107,19 @@ export default function ItemDetails() {
     const router = useRouter();
     const [item, setItem] = useState<Item | null>(null);
     const [loading, setLoading] = useState(true);
-
-    // --- 👇 MOCK USER FIXED HERE 👇 ---
-    // Instead of useState, we create a fake user object directly.
-    // This stops the app from waiting for a real login.
-    const currentUser = { id: "fake-receiver-id" }; 
+    const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null);
     const supabase = createClient();
 
     useEffect(() => {
+        // Fetch current authenticated user
+        const fetchUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user) {
+                setCurrentUser({ id: user.id });
+            }
+        };
+        fetchUser();
+
         const fetchData = async () => {
             if (!id) return;
             setLoading(true);
@@ -152,6 +169,11 @@ export default function ItemDetails() {
                     }
                 }
 
+                // Calculate CO2 saved dynamically
+                const weight = Number(itemData.weight) || 0;
+                const co2Multiplier = getCO2Multiplier(itemData.category || '');
+                const co2Saved = (weight * co2Multiplier).toFixed(1);
+
                 // Construct Item Object
                 const newItem: Item = {
                     id: itemData.id,
@@ -159,10 +181,12 @@ export default function ItemDetails() {
                     images: processedImages,
                     category: [itemData.type.charAt(0).toUpperCase() + itemData.type.slice(1)],
                     condition: itemData.condition === 'Liked New' ? 'Like New' : itemData.condition,
-                    co2Saved: "1.2kg CO₂",
+                    co2Saved: `${co2Saved}kg CO₂`,
                     description: itemData.description,
                     owner_id: itemData.user_id,
                     status: itemData.status,
+                    weight: weight,
+                    itemCategory: itemData.category,
                     owner: ownerData
                 };
 
@@ -177,11 +201,9 @@ export default function ItemDetails() {
     if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     if (!item) return <div className="min-h-screen flex items-center justify-center">Item not found</div>;
 
-    // --- 👇 MOCK LOGIC OVERRIDE 👇 ---
-    // We force the logic to assume YOU are NOT the owner, so the button shows.
-    // Ensure item.owner_id is NOT 'fake-receiver-id'
-    const isOwner = false; 
-    const isCompleted = false; // We force the status to be 'incomplete' so button shows
+    // Check if current user is the owner
+    const isOwner = currentUser?.id === item.owner_id;
+    const isCompleted = item.status === 'completed';
 
     return (
         <div className="min-h-screen flex flex-col">
@@ -260,12 +282,14 @@ export default function ItemDetails() {
                                 Email Owner
                             </button>
                         </div>
-
-                        <CompleteButton
-                            itemId={item.id}
-                            donorId={item.owner_id} // This comes from DB
-                            receiverId={currentUser.id} // This is "fake-receiver-id"
-                        />
+                        {/* Complete Button - only show if user is logged in and not the owner */}
+                        {currentUser && !isOwner && !isCompleted && (
+                            <CompleteButton
+                                itemId={item.id}
+                                donorId={item.owner_id}
+                                receiverId={currentUser.id}
+                            />
+                        )}
                         {/* =========================================== */}
 
                     </div>

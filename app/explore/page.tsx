@@ -87,7 +87,7 @@ const FilterSidebar = ({
       category: "Clothing",
       co2: 3.0
     }, {
-      category:"Books",
+      category: "Books",
       co2: 1.5
     }, {
       category: "Electronics",
@@ -220,7 +220,8 @@ const ExplorePage: React.FC = () => {
     const fetchItems = async () => {
       const { data, error } = await supabase
         .from('items')
-        .select('*, item_images(url)');
+        .select('*, item_images(url)')
+        .eq('status', 'active');  // Only fetch active items (exclude completed)
 
       if (error) {
         console.error('Error fetching items:', error);

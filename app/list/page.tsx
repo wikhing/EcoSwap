@@ -83,7 +83,7 @@ const List: React.FC = () => {
       setError('Please select a category');
       return;
     }
-    if(!weight.trim()) {
+    if (!weight.trim()) {
       setError('Please enter the item weight');
       return;
     }
@@ -91,15 +91,15 @@ const List: React.FC = () => {
       setError('Please enter an item description');
       return;
     }
-    if(!listType) {
+    if (!listType) {
       setError('Please select a listing type');
       return;
     }
-    if(!pickupMethod) {
+    if (!pickupMethod) {
       setError('Please select a pickup/drop-off method');
       return;
     }
-    if(!campusLocation.trim()) {
+    if (!campusLocation.trim()) {
       setError('Please enter your campus location');
       return;
     }
@@ -211,7 +211,7 @@ const List: React.FC = () => {
   return (
     <div className="min-h-screen pb-20">
 
-      <Hero title='List Your Item' subtitle='Give what you don&apos;t need, help someone who does.'/>
+      <Hero title='List Your Item' subtitle='Give what you don&apos;t need, help someone who does.' />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className='bg-white rounded-2xl p-8 mb-8'>
@@ -324,8 +324,8 @@ const List: React.FC = () => {
                         type="button"
                         onClick={() => setItemCategory(cat)}
                         className={`py-2 px-3 rounded-lg text-sm font-medium border-2 transition text-center ${itemCategory === cat
-                            ? 'border-(--green-color) bg-(--green-color) text-white shadow-md'
-                            : 'border-white text-(--green-color) hover:border-(--green-color) bg-white'
+                          ? 'border-(--green-color) bg-(--green-color) text-white shadow-md'
+                          : 'border-white text-(--green-color) hover:border-(--green-color) bg-white'
                           }`}
                       >
                         {cat}
@@ -372,8 +372,8 @@ const List: React.FC = () => {
                   <button
                     onClick={() => setListType('donate')}
                     className={`px-6 py-1.5 rounded-full font-medium transition ${listType === 'donate'
-                        ? 'bg-(--green-color) border-2 border-white text-white'
-                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      ? 'bg-(--green-color) border-2 border-white text-white'
+                      : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
                       }`}
                     type="button"
                   >
@@ -382,8 +382,8 @@ const List: React.FC = () => {
                   <button
                     onClick={() => setListType('swap')}
                     className={`px-6 py-1.5 rounded-full font-medium transition ${listType === 'swap'
-                        ? 'bg-(--green-color) border-2 border-white text-white'
-                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      ? 'bg-(--green-color) border-2 border-white text-white'
+                      : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
                       }`}
                     type="button"
                   >
@@ -399,8 +399,8 @@ const List: React.FC = () => {
                   <button
                     onClick={() => setPickupMethod('pickup')}
                     className={`px-6 py-1.5 rounded-full font-medium transition ${pickupMethod === 'pickup'
-                        ? 'bg-(--green-color) border-2 border-white text-white'
-                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      ? 'bg-(--green-color) border-2 border-white text-white'
+                      : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
                       }`}
                     type="button"
                   >
@@ -409,8 +409,8 @@ const List: React.FC = () => {
                   <button
                     onClick={() => setPickupMethod('dropoff')}
                     className={`px-6 py-1.5 rounded-full font-medium transition ${pickupMethod === 'dropoff'
-                        ? 'bg-(--green-color) border-2 border-white text-white'
-                        : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
+                      ? 'bg-(--green-color) border-2 border-white text-white'
+                      : 'bg-white text-(--green-color) border-white hover:border-(--green-color) border-2'
                       }`}
                     type="button"
                   >
@@ -425,10 +425,10 @@ const List: React.FC = () => {
                 <div className='bg-white rounded-2xl px-8 pb-4 pt-2 w-full'>
                   <input
                     type="text"
-                    value={weight}
+                    value={campusLocation}
                     onChange={(e) => setCampusLocation(e.target.value)}
                     className="flex-1 w-full bg-transparent border-b border-gray-400 focus:border-(--green-color) outline-none py-1 transition-colors"
-                    aria-label="Item Weight"
+                    aria-label="Campus Location"
                   />
                 </div>
               </div>
@@ -503,7 +503,7 @@ const List: React.FC = () => {
                   </li>
                 </ul>
               </section>
-              
+
               {/* How Swapping Works */}
               <section className='justify-self-center mr-4'>
                 <h3 className="text-2xl font-bold text-(--black-color) mb-4 border-b-2 border-gray-300 inline-block pb-1">

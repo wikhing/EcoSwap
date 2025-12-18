@@ -38,7 +38,7 @@ const RecentListingCard: React.FC<{ item: Listing }> = ({ item }) => {
           className="object-contain p-1"
         />
       </div>
-  
+
       {/* Item Details */}
       <div className={`${isHovering ? '' : 'hidden'} flex flex-col grow py-1 overflow-x-hidden`}>
         <h4 className={`${isHovering ? 'w-90' : 'w-0'} grow font-bold text-(--black-color) leading-tight mb-1 mr-4`}>{item.title}</h4>
@@ -50,13 +50,13 @@ const RecentListingCard: React.FC<{ item: Listing }> = ({ item }) => {
             {item.status}
           </span>
         </div>
-        
+
         <div className="grow">
-            <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-(--green-color)">Edit</button>
-            <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-(--green-color)">Complete</button>
-            <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-red-600">Remove</button>
+          <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-(--green-color)">Edit</button>
+          <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-(--green-color)">Complete</button>
+          <button className="mt-4 flex font-medium text-sm text-(--dark-grey-color) hover:text-red-600">Remove</button>
         </div>
-        
+
       </div>
     </div>
   );
@@ -82,7 +82,7 @@ const EcoScoreChart = ({ swaps }: { swaps: number }) => {
           cx="60"
           cy="60"
           r={radius}
-          stroke="#15803d" 
+          stroke="#15803d"
           strokeWidth="12"
           fill="transparent"
           strokeDasharray={circumference}
@@ -104,7 +104,12 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
-  const [swaps, setSwaps] = useState(0); 
+  const [swaps, setSwaps] = useState(0);
+  const [userStats, setUserStats] = useState({
+    itemsDonated: 0,
+    itemsSwapped: 0,
+    co2Saved: 0
+  });
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -135,6 +140,22 @@ export default function ProfilePage() {
       setUser(currentUser);
 
       if (currentUser) {
+        // Fetch user stats from users table (items donated/swapped after deal completion)
+        const { data: statsData } = await supabase
+          .from('users')
+          .select('items_donated, items_swapped, co2_saved')
+          .eq('id', currentUser.id)
+          .single();
+
+        if (statsData) {
+          setUserStats({
+            itemsDonated: statsData.items_donated || 0,
+            itemsSwapped: statsData.items_swapped || 0,
+            co2Saved: statsData.co2_saved || 0
+          });
+          setSwaps(statsData.items_swapped || 0);
+        }
+
         // Fetch user's listings with images
         const { data: userListings, error } = await supabase
           .from('items')
@@ -186,15 +207,16 @@ export default function ProfilePage() {
   }
 
   const stats = [
-    { label: "ITEMS DONATED", value: listings.filter(l => l.status === 'active').length.toString() },
-    { label: "SUCCESSFUL SWAPS", value: "0" },
-    { label: "CO₂ SAVED", value: "0kg" },
+    { label: "ITEMS DONATED", value: userStats.itemsDonated.toString() },
+    { label: "SUCCESSFUL SWAPS", value: userStats.itemsSwapped.toString() },
+    { label: "CO₂ SAVED", value: `${userStats.co2Saved.toFixed(1)}kg` },
   ];
 
+  const totalItems = userStats.itemsDonated + userStats.itemsSwapped;
   const badges = [
-    { id: 1, title: "First Donation", icon: <Recycle className="w-6 h-6 text-(--green-color)" />, received: listings.length > 0 },
-    { id: 2, title: "Eco Starter", icon: <Sprout className="w-6 h-6 text-(--green-color)" />, received: listings.length >= 3 },
-    { id: 3, title: "Zero Waste Hero", icon: <Trophy className="w-6 h-6 text-yellow-500" />, received: listings.length >= 10 },
+    { id: 1, title: "First Donation", icon: <Recycle className="w-6 h-6 text-(--green-color)" />, received: userStats.itemsDonated > 0 },
+    { id: 2, title: "Eco Starter", icon: <Sprout className="w-6 h-6 text-(--green-color)" />, received: totalItems >= 3 },
+    { id: 3, title: "Zero Waste Hero", icon: <Trophy className="w-6 h-6 text-yellow-500" />, received: userStats.co2Saved >= 20 },
   ];
 
   if (loading) {
@@ -269,15 +291,15 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs Navigation */}
-          <div className="md:col-start-2 md:col-span-3 md:row-span-1 bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-4 h-full">
-            <div className="flex space-x-8 overflow-x-auto">
-              <button className="text-(--green-color) font-bold border-b-2 border-(--green-color) pb-1 whitespace-nowrap" onClick={updateTab}>Overview</button>
-              <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap" onClick={updateTab}>My Listings</button>
-              <Link href='impact' className="self-center text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Impact</Link>
-            </div>
+        <div className="md:col-start-2 md:col-span-3 md:row-span-1 bg-white rounded-xl shadow-sm border border-gray-100 px-6 py-4 h-full">
+          <div className="flex space-x-8 overflow-x-auto">
+            <button className="text-(--green-color) font-bold border-b-2 border-(--green-color) pb-1 whitespace-nowrap" onClick={updateTab}>Overview</button>
+            <button className="text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap" onClick={updateTab}>My Listings</button>
+            <Link href='impact' className="self-center text-(--dark-grey-color) hover:text-(--green-color) font-medium whitespace-nowrap">My Impact</Link>
           </div>
+        </div>
 
-          {/* Stats Cards Row */}
+        {/* Stats Cards Row */}
         <div className="md:col-start-2 md:col-span-3 md:row-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 h-full">
           {stats.map((stat, index) => (
             <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center h-full">
@@ -293,7 +315,7 @@ export default function ProfilePage() {
             <h3 className="text-lg font-bold text-(--black-color)">Recent Listings</h3>
             <button className="text-(--green-color) text-sm font-bold hover:underline" onClick={updateTab}>View All</button>
           </div>
-      
+
           {listings.length === 0 ? (
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center h-19/23 flex flex-col items-center justify-center">
               <p className="text-(--dark-grey-color) mb-4">You haven&apos;t listed any items yet.</p>
@@ -303,7 +325,7 @@ export default function ProfilePage() {
             </div>
           ) : (
             <div className="flex flex-row gap-6 h-19/23">
-              {listings.map((item) => {              
+              {listings.map((item) => {
                 return (
                   <RecentListingCard key={item.id} item={item} />
                 );
@@ -311,7 +333,7 @@ export default function ProfilePage() {
             </div>
           )}
         </div>
-        
+
         {/* Achievements Section */}
         <div className="md:col-start-2 md:col-span-3 md:row-span-4 md:row-start-7 bg-white rounded-xl shadow-sm border border-gray-100 p-8 h-full">
           <h3 className="text-lg font-bold text-(--black-color) mb-6">Achievements & Badges</h3>
