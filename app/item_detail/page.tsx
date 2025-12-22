@@ -123,7 +123,7 @@ const Gallery = ({ images }: { images: string[] }) => {
 };
 
 // --- Main Page Component ---
-export default function ItemDetailsMiddle() {
+const ItemDetailsMiddle: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col">
 

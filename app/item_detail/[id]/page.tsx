@@ -271,6 +271,11 @@ export default function ItemDetails() {
                             </div>
                         </div>
 
+                        <div className='bg-white rounded-2xl p-4 px-8 mb-8'>
+                            <h2 className='text-2xl text-center text-(--green-color) font-bold mb-2'>Safety Disclaimer</h2>
+                            <p className='text-md text-justify mb-2 font-bold'>EcoSwap is not responsible for user-to-user interactions. All exchanges are made at users’ own risk.</p>
+                        </div>
+
                         {/* === BUTTON SECTION (Mocked to always show) === */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-4">
                             <button className="flex-1 bg-(--green-color) text-white font-bold py-1 rounded-full shadow-lg hover:opacity-90 transition-all flex items-center justify-center text-md">

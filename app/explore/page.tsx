@@ -21,29 +21,29 @@ interface FilterState {
   conditions: string[];
 }
 
-const MOCK_DATABASE: Product[] = [
-  { id: 1, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Home Goods", condition: "Brand New" },
-  { id: 2, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Electronics", condition: "Like New" },
-  { id: 3, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Books", condition: "Lightly Used" },
-  { id: 4, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
-  { id: 5, title: "One Life Graphic T-shirt", images: ["./assets/mock_datas/mock_data5.png"], type: "Swap", category: "Clothing", condition: "Like New" },
-  { id: 6, title: "Wireless Mechanic Keyboard", images: ["./assets/mock_datas/mock_data6.png"], type: "Swap", category: "Electronics", condition: "Like New" },
-  { id: 7, title: "2nd Hand North Carolina Hoodie", images: ["./assets/mock_datas/mock_data7.png"], type: "Donate", category: "Clothing", condition: "Lightly Used" },
-  { id: 8, title: "IKEA Frakta Bag", images: ["./assets/mock_datas/mock_data8.png"], type: "Donate", category: "Others", condition: "Lightly Used" },
-  { id: 9, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data9.png"], type: "Swap", category: "Others", condition: "Like New" },
-  { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", images: ["./assets/mock_datas/mock_data10.png"], type: "Donate", category: "Books", condition: "Lightly Used" },
-  { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", images: ["./assets/mock_datas/mock_data11.png"], type: "Swap", category: "Others", condition: "Like New" },
-  { id: 12, title: "Tote Bag Oura Matcha", images: ["./assets/mock_datas/mock_data12.png"], type: "Donate", category: "Clothing", condition: "Lightly Used" },
-  { id: 13, title: "Rainbow Sticky Note Cube", images: ["./assets/mock_datas/mock_data13.png"], type: "Donate", category: "Stationery", condition: "Like New" },
-  { id: 14, title: "Wireless Bluetooth Headphones", images: ["./assets/mock_datas/mock_data14.png"], type: "Swap", category: "Electronics", condition: "Heavily Used" },
-  { id: 15, title: "2nd Hand Muji Desk Organiser", images: ["./assets/mock_datas/mock_data15.png"], type: "Donate", category: "Home goods", condition: "Like New" },
-  { id: 16, title: "2nd Hand Baseball Cap", images: ["./assets/mock_datas/mock_data16.png"], type: "Swap", category: "Clothing", condition: "Brand New" },
-  // ... Duplicate data to demonstrate "Load More" functionality
-  { id: 17, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Electronics", condition: "Like New" },
-  { id: 18, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Home Goods", condition: "Like New" },
-  { id: 19, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Others", condition: "Brand New" },
-  { id: 20, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
-];
+// const MOCK_DATABASE: Product[] = [
+//   { id: 1, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Home Goods", condition: "Brand New" },
+//   { id: 2, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Electronics", condition: "Like New" },
+//   { id: 3, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Books", condition: "Lightly Used" },
+//   { id: 4, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
+//   { id: 5, title: "One Life Graphic T-shirt", images: ["./assets/mock_datas/mock_data5.png"], type: "Swap", category: "Clothing", condition: "Like New" },
+//   { id: 6, title: "Wireless Mechanic Keyboard", images: ["./assets/mock_datas/mock_data6.png"], type: "Swap", category: "Electronics", condition: "Like New" },
+//   { id: 7, title: "2nd Hand North Carolina Hoodie", images: ["./assets/mock_datas/mock_data7.png"], type: "Donate", category: "Clothing", condition: "Lightly Used" },
+//   { id: 8, title: "IKEA Frakta Bag", images: ["./assets/mock_datas/mock_data8.png"], type: "Donate", category: "Others", condition: "Lightly Used" },
+//   { id: 9, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data9.png"], type: "Swap", category: "Others", condition: "Like New" },
+//   { id: 10, title: "Past Year Paper with Answer Organic Chemistry II", images: ["./assets/mock_datas/mock_data10.png"], type: "Donate", category: "Books", condition: "Lightly Used" },
+//   { id: 11, title: "YONEX ACB TR Badminton Feather Shuttlecock (White)", images: ["./assets/mock_datas/mock_data11.png"], type: "Swap", category: "Others", condition: "Like New" },
+//   { id: 12, title: "Tote Bag Oura Matcha", images: ["./assets/mock_datas/mock_data12.png"], type: "Donate", category: "Clothing", condition: "Lightly Used" },
+//   { id: 13, title: "Rainbow Sticky Note Cube", images: ["./assets/mock_datas/mock_data13.png"], type: "Donate", category: "Stationery", condition: "Like New" },
+//   { id: 14, title: "Wireless Bluetooth Headphones", images: ["./assets/mock_datas/mock_data14.png"], type: "Swap", category: "Electronics", condition: "Heavily Used" },
+//   { id: 15, title: "2nd Hand Muji Desk Organiser", images: ["./assets/mock_datas/mock_data15.png"], type: "Donate", category: "Home goods", condition: "Like New" },
+//   { id: 16, title: "2nd Hand Baseball Cap", images: ["./assets/mock_datas/mock_data16.png"], type: "Swap", category: "Clothing", condition: "Brand New" },
+//   // ... Duplicate data to demonstrate "Load More" functionality
+//   { id: 17, title: "Stanley 40 oz Quencher Mist", images: ["./assets/mock_datas/mock_data1.png"], type: "Swap", category: "Electronics", condition: "Like New" },
+//   { id: 18, title: "JBL Portable Bluetooth Speaker", images: ["./assets/mock_datas/mock_data2.png"], type: "Donate", category: "Home Goods", condition: "Like New" },
+//   { id: 19, title: "2nd Hand Introduction to Parallel Programming", images: ["./assets/mock_datas/mock_data3.png"], type: "Donate", category: "Others", condition: "Brand New" },
+//   { id: 20, title: "IKEA Desk Lamp", images: ["./assets/mock_datas/mock_data4.png"], type: "Swap", category: "Home Goods", condition: "Like New" },
+// ];
 
 
 
@@ -270,7 +270,8 @@ const ExplorePage: React.FC = () => {
     setIsLoading(true);
 
     // Combine Mock Data and DB Items
-    const allItems = [...MOCK_DATABASE, ...dbItems];
+    // const allItems = [...MOCK_DATABASE, ...dbItems];
+    const allItems = [...dbItems];
 
     // Filter the entire database
     let filteredData = allItems.filter(item => {
@@ -318,6 +319,11 @@ const ExplorePage: React.FC = () => {
       <Hero title="Explore Items" subtitle="Find items to swap, donate, or discover" />
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
+
+        <div className='bg-white rounded-2xl p-8 mb-8'>
+          <h2 className='text-3xl text-center text-(--green-color) font-bold mb-2'>Safety Disclaimer</h2>
+          <p className='text-justify mb-2 font-bold'>EcoSwap only provides a platform for users to list and discover items. All exchanges, meet-ups, and communications are conducted entirely at the users&apos; own discretion and risk. EcoSwap and its developers are not responsible for any disputes, losses, damages, or safety issues arising from interactions between users. Users are advised to take necessary precautions and ensure their own safety when dealing with others.</p>
+        </div>
 
         {/* Search & Filter Bar */}
         <div className="flex gap-4 mb-8">
