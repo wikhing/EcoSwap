@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useState } from 'react';
+import { createClient } from '@/lib/supabase';
 
 const navLinks = [
     { name: 'Home', href: '/home' },
@@ -15,16 +16,25 @@ const navLinks = [
 
 export default function Header() { 
     const [isOpen, setIsOpen] = useState(false);
-    
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const supabase = createClient();
     const router = useRouter();
 
-    let isLoggedIn = true;
+    const checkAuthStatus = async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        setIsLoggedIn(!!session);
+    };
+
+    useState(() => {
+        checkAuthStatus();
+    });
 
     const handleLogout = (sectionId: string) => {
+        supabase.auth.signOut().then(() => {
+            setIsLoggedIn(false);
+            router.push('/' + sectionId);
+        });
 
-        // Logout
-
-        router.push('/' + sectionId);
     };
 
     const pathname = usePathname();
