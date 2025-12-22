@@ -115,6 +115,11 @@ export default function HomePage() {
       // Get current user
       const { data: { user } } = await supabase.auth.getUser();
 
+      if(!user) {
+        router.push('/login');
+        return;
+      }
+
       if (user) {
         // Set user name
         const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
@@ -144,7 +149,7 @@ export default function HomePage() {
     };
 
     fetchUserStats();
-  }, []);
+  }, [router, supabase]);
 
   useEffect(() => {
     const id = setInterval(

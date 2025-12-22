@@ -61,7 +61,7 @@ export default function Header() {
             </div>
             <div className={`flex flex-col ml-7 transition-height duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-80' : 'max-h-0'} lg:w-full lg:max-h-none lg:flex-row lg:justify-end`}>
                 <div className="pl-6 self-start lg:m-auto">
-                    <nav className="flex flex-col py-2 space-x-10 space-y-2 lg:flex-row lg:pl-0 lg:justify-self-center">
+                    <nav className={`${isLoggedIn ? 'flex' : 'hidden'} flex-col py-2 space-x-10 space-y-2 lg:flex-row lg:pl-0 lg:justify-self-center`}>
                         {
                             navLinks.map((link) => (
                                 <Link 
@@ -96,7 +96,7 @@ export default function Header() {
                                     </>
                                 ):(
                                     <div className='self-center items-center space-x-4 flex w-full h-full'>
-                                        <Link className="w-6" href="notification">
+                                        <Link className="hidden w-6" href="notification">
                                             <svg className='w-6 hover:fill-(--green-color)' width="40" height="46" viewBox="0 0 40 46" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M17.439 0.981333C16.8902 1.472 16.4634 2.33067 16.4634 2.82133C16.5244 3.312 15.6098 4.048 14.5122 4.47733C13.4756 4.968 11.5244 6.256 10.2439 7.42133C8.96342 8.58667 7.37805 10.6107 6.70732 11.96C5.97561 13.4933 5.54878 15.7627 5.54878 18.0933C5.54878 20.1173 5.2439 23.4293 4.93902 25.4533C4.57317 27.4773 4.20732 29.624 4.02439 30.176C3.71951 31.2187 4.81707 31.28 20.1829 31.28C35.5488 31.28 36.6463 31.2187 36.3415 30.176C36.1585 29.624 35.7927 27.4773 35.4268 25.4533C35.122 23.4293 34.8171 20.1787 34.8171 18.216C34.8171 16.3147 34.4512 13.8 34.0244 12.696C33.5366 11.6533 32.2561 9.69067 31.0976 8.40267C29.939 7.11467 27.8659 5.52 26.4024 4.84533C25 4.232 23.8415 3.25067 23.8415 2.76C23.8415 2.26933 23.4146 1.41067 22.9268 0.92C22.439 0.429333 21.2195 0 20.2439 0C19.2683 0 17.9878 0.429333 17.439 0.981333ZM0.182927 36.616L0.365854 38.3333L14.6951 38.64C14.6951 42.2587 15.1829 43.424 16.2195 44.4667C17.3171 45.5707 18.4146 46 20.1829 46C22.0122 46 23.0488 45.632 24.1463 44.4667C25.1829 43.424 25.6707 42.2587 25.6707 40.7867V38.64L40 38.3333V35.2667L0 34.96L0.182927 36.616Z"/>
                                             </svg>

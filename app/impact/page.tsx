@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import StatCard from "../components/statCard";
 import { createClient } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 // --- Types ---
 
@@ -44,6 +45,7 @@ const AchievementCard: React.FC<AchievementProps> = ({ title, description, icon,
 
 export default function ImpactTracker() {
   const supabase = createClient();
+  const router = useRouter();
   const [selectedYear, setSelectedYear] = useState<string>("2025");
   const [stats, setStats] = useState<UserStats>({
     co2Today: 0,
@@ -62,13 +64,19 @@ export default function ImpactTracker() {
 
   useEffect(() => {
     fetchAllData();
-  }, []);
+  }, [router, supabase]);
 
   const fetchAllData = async () => {
     setLoading(true);
 
     // Get current user
     const { data: { user } } = await supabase.auth.getUser();
+
+    if(!user) {
+      setLoading(false);
+      router.push('/login');
+      return;
+    }
 
     if (user) {
       // Fetch user stats

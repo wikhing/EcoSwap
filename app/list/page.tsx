@@ -4,11 +4,13 @@ import { X, CheckCircle2, AlertTriangle, Clock, Ban, Leaf, Recycle, List as List
 import Hero from '../components/hero';
 import { createClient } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import { User } from '@supabase/supabase-js';
 
 const List: React.FC = () => {
   const supabase = createClient();
   const router = useRouter();
 
+  const [user, setUser] = useState<User | null>(null);
   const [images, setImages] = useState<{ file: File; preview: string }[]>([]);
   const [title, setTitle] = useState('');
   const [condition, setCondition] = useState<typeof conditions[number]>('');
@@ -24,11 +26,24 @@ const List: React.FC = () => {
   const categories = ["Clothing x3.0/kg", "Books x1.5/kg", "Electronics x7.5/kg", "Home Goods x6.0/kg", "Stationery x3.5/kg", "Others"];
   const conditions = ["Brand New", "Like New", "Lightly Used", "Well Used", "Heavily Used"];
 
+  const checkAuthStatus = async () => {
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    setUser(currentUser);
+
+    // If user not logged in, redirect to login page
+    if (!currentUser) {
+      router.push('/login');
+      return;
+    }
+  };
+
   useEffect(() => {
+    checkAuthStatus();
+
     return () => {
       images.forEach(image => URL.revokeObjectURL(image.preview));
     };
-  }, []);
+  }, [router]);
 
   interface HandleFileChangeEvent extends React.ChangeEvent<HTMLInputElement> { }
 

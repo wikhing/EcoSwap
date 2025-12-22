@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
 import Hero from '../components/hero';
 import ProductCard from '../components/productCards';
@@ -201,6 +201,7 @@ const FilterSidebar = ({
 
 const ExplorePage: React.FC = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const [items, setItems] = useState<Product[]>([]);
   const [dbItems, setDbItems] = useState<Product[]>([]);
@@ -217,7 +218,17 @@ const ExplorePage: React.FC = () => {
 
   const supabase = createClient();
 
+  const checkAuthStatus = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if(!user) {
+      router.push('/login');
+      return;
+    }
+  };
+
   useEffect(() => {
+    checkAuthStatus();
+    
     const fetchItems = async () => {
       const { data, error } = await supabase
         .from('items')
@@ -259,7 +270,7 @@ const ExplorePage: React.FC = () => {
     };
 
     fetchItems();
-  }, []); // Only run on mount
+  }, [router, supabase]); // Only run on mount
 
   // Sync search query from URL (e.g., when routed from another page)
   useEffect(() => {

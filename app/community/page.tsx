@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react'; // Added useState for interactivity
+import { use, useEffect, useState } from 'react'; // Added useState for interactivity
 import Image from 'next/image';
 import Link from 'next/link';
 import Hero from '../components/hero';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase';
 
 // --- Types for Data ---
 interface Story {
@@ -135,6 +137,21 @@ const UpcomingEventCard: React.FC<{ event: Event }> = ({ event }) => {
 
 export default function CommunityPage() {
   const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  const router = useRouter();
+
+  const checkAuthStatus = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if(!user) {
+      router.push('/login');
+      return false;
+    }
+    return true;
+  }
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [router, createClient]);
 
   const stories: Story[] = [
     {
