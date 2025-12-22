@@ -17,13 +17,13 @@ const HeroLanding: React.FC = () => {
         />
         {/* Overlay Content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 bg-white/10 backdrop-blur-[1px]">
-          <h1 className="text-5xl lg:text-7xl font-bold text-(--black-color) drop-shadow-sm">
+          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold text-(--black-color) drop-shadow-sm">
             Give Your Items a 2nd Life
           </h1>
-          <p className="text-xl lg:text-2xl text-(--black-color) mt-6 max-w-2xl font-medium">
+          <p className="text-lg md:text-xl lg:text-2xl text-(--black-color) mt-6 max-w-2xl font-medium">
             Swap, donate, or find pre-loved items — reduce waste and help the planet.
           </p>
-          <Link href="/signup" className="px-8 py-3 mt-16 bg-white text-3xl text-(--green-color) font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform">
+          <Link href="/signup" className="px-8 py-3 mt-16 bg-white text-md md:text-xl lg:text-3xl text-(--green-color) font-bold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition transform">
             Begin your Reuse Journey
           </Link>
         </div>

@@ -6,6 +6,7 @@ import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
 import Hero from '../components/hero';
 import ProductCard from '../components/productCards';
 import { createClient } from '../../lib/supabase';
+import Button from '../components/button';
 
 interface Product {
   id: number | string;
@@ -47,27 +48,27 @@ interface FilterState {
 
 
 
-const Button = ({
-  children,
-  variant = 'primary',
-  className = '',
-  onClick,
-  active = false
-}: { children: React.ReactNode, variant?: 'primary' | 'outline' | 'filter', className?: string, onClick?: () => void, active?: boolean }) => {
-  const baseStyle = "min-w-48 font-bold text-lg transition-all duration-200 flex items-center justify-center ";
+// const Button = ({
+//   children,
+//   variant = 'primary',
+//   className = '',
+//   onClick,
+//   active = false
+// }: { children: React.ReactNode, variant?: 'primary' | 'outline' | 'filter', className?: string, onClick?: () => void, active?: boolean }) => {
+//   const baseStyle = "min-w-48 font-bold text-lg transition-all duration-200 flex items-center justify-center ";
 
-  const variants = {
-    primary: "bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) rounded-full py-2 px-6",
-    outline: "bg-white border border-(--green-color) text-(--green-color) hover:bg-green-50 rounded-full py-2 px-6",
-    filter: `rounded-full py-3 px-8 text-lg shadow-sm flex gap-2 items-center ${active ? 'bg-(--green-color) text-white' : 'bg-white text-(--green-color) hover:bg-gray-50'}`
-  };
+//   const variants = {
+//     primary: "bg-(--green-color) text-white hover:bg-white hover:text-(--green-color) border-2 border-(--green-color) rounded-full py-2 px-6",
+//     outline: "bg-white border border-(--green-color) text-(--green-color) hover:bg-green-50 rounded-full py-2 px-6",
+//     filter: `rounded-full py-3 px-8 text-lg shadow-sm flex gap-2 items-center ${active ? 'bg-(--green-color) text-white' : 'bg-white text-(--green-color) hover:bg-gray-50'}`
+//   };
 
-  return (
-    <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
-      {children}
-    </button>
-  );
-};
+//   return (
+//     <button onClick={onClick} className={`${baseStyle} ${variants[variant]} ${className}`}>
+//       {children}
+//     </button>
+//   );
+// };
 
 const FilterSidebar = ({
   isOpen,
@@ -348,14 +349,14 @@ const ExplorePage: React.FC = () => {
 
         {/* Tabs */}
         <div className="flex flex-wrap justify-center gap-6 mb-12">
-          <Button variant="filter" active={activeTab === 'All'} onClick={() => setActiveTab('All')}>
+          <Button variant="toggle" active={activeTab === 'All'} onClick={() => setActiveTab('All')}>
             All
           </Button>
-          <Button variant="filter" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
+          <Button variant="toggle" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
             <Sprout className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
             Donate
           </Button>
-          <Button variant="filter" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
+          <Button variant="toggle" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
             <Recycle className={activeTab === 'Swap' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
             Swap
           </Button>
