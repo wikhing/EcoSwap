@@ -215,8 +215,8 @@ const List: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className='bg-white rounded-2xl p-8 mb-8'>
-          <h2 className='text-2xl text-center text-(--green-color) font-bold mb-2'>CO₂ Description</h2>
-          <p className='text-justify mb-2'>Emission factors were estimated using average lifecycle data from referenced studies and LCA databases such as DEFRA, Ecoinvent, and IPCC guidelines. A single representative value per category was used to simplify calculation for university-level analysis</p>
+          <h2 className='text-2xl text-center text-(--green-color) font-bold mb-2'>CO₂ Savings Estimates & Methodology</h2>
+          <p className='text-justify mb-2'>The CO₂ savings on this website are estimated using internationally recognised emission factor data. We calculate the avoided emissions from reusing items by applying average lifecycle emission factors (kg CO₂ per kg of material) sourced from the UK Government&apos;s Greenhouse Gas Reporting: Conversion Factors and related methodology documents. These emission factors reflect materials production, processing, and embodied emissions, and are based on publicly available datasets and life cycle assessment (LCA) principles. Actual emissions may vary by item type, production process, and geographical context. <span className='flex mt-2 place-content-center'>Reference: <a className="ml-2 text-(--green-color) hover:text-green-700 hover:underline" href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025" target="_blank" rel="noopener noreferrer">https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025</a></span></p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-11 gap-12">
@@ -433,8 +433,13 @@ const List: React.FC = () => {
                 </div>
               </div>
 
+              <div className='bg-white rounded-2xl p-8 mb-8'>
+                <h2 className='text-3xl text-center text-(--green-color) font-bold mb-2'>Safety Disclaimer</h2>
+                <p className='text-justify mb-2 font-bold'>EcoSwap only provides a platform for users to list and discover items. All exchanges, meet-ups, and communications are conducted entirely at the users&apos; own discretion and risk. EcoSwap and its developers are not responsible for any disputes, losses, damages, or safety issues arising from interactions between users. Users are advised to take necessary precautions and ensure their own safety when dealing with others.</p>
+              </div>
+
               {/* Submit Button */}
-              <div className="pt-12 flex justify-center">
+              <div className="pt-8 flex justify-center">
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
