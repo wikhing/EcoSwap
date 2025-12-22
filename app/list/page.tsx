@@ -216,7 +216,7 @@ const List: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className='bg-white rounded-2xl p-8 mb-8'>
           <h2 className='text-2xl text-center text-(--green-color) font-bold mb-2'>CO₂ Savings Estimates & Methodology</h2>
-          <p className='text-justify mb-2'>The CO₂ savings on this website are estimated using internationally recognised emission factor data. We calculate the avoided emissions from reusing items by applying average lifecycle emission factors (kg CO₂ per kg of material) sourced from the UK Government&apos;s Greenhouse Gas Reporting: Conversion Factors and related methodology documents. These emission factors reflect materials production, processing, and embodied emissions, and are based on publicly available datasets and life cycle assessment (LCA) principles. Actual emissions may vary by item type, production process, and geographical context. <span className='flex mt-2 place-content-center'>Reference: <a className="ml-2 text-(--green-color) hover:text-green-700 hover:underline" href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025" target="_blank" rel="noopener noreferrer">https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025</a></span></p>
+          <p className='w-full text-justify mb-2'>The CO₂ savings on this website are estimated using internationally recognised emission factor data. We calculate the avoided emissions from reusing items by applying average lifecycle emission factors (kg CO₂ per kg of material) sourced from the UK Government&apos;s Greenhouse Gas Reporting: Conversion Factors and related methodology documents. These emission factors reflect materials production, processing, and embodied emissions, and are based on publicly available datasets and life cycle assessment (LCA) principles. Actual emissions may vary by item type, production process, and geographical context. <span className='w-full flex flex-wrap mt-2 place-content-center'>Reference: <a className=" w-full overflow-clip ml-2 text-(--green-color) hover:text-green-700 hover:underline" href="https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025" target="_blank" rel="noopener noreferrer">https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2025</a></span></p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-11 gap-12">
@@ -296,7 +296,7 @@ const List: React.FC = () => {
               {/* Condition */}
               <div className="flex flex-col items-center gap-2">
                 <label className="self-start font-bold text-lg min-w-24 mt-1">Item Condition:</label>
-                <div className="bg-white rounded-2xl flex flex-row space-x-3 p-2 w-full justify-center">
+                <div className="bg-white rounded-2xl flex flex-col md:flex-row space-y-3 md:space-y-0 md:space-x-3 p-2 w-full justify-center place-items-center">
                   <span className='mx-auto self-center text-(--green-color) text-lg font-bold' >New</span>
                   {conditions.map((option) => (
                     <label key={option} className={`${condition === option ? 'w-40 bg-(--green-color) text-white' : 'w-4 bg-white'} px-4 py-2 h-10 border-4 border-(--green-color) hover:bg-(--green-color) rounded-full flex items-center gap-3 overflow-x-hidden overflow-y-hidden cursor-pointer transition-all duration-300`}>
@@ -366,7 +366,7 @@ const List: React.FC = () => {
               </div>
 
               {/* Type */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col lg:flex-row items-center gap-2">
                 <label className="self-start font-bold text-lg min-w-24 w-50">Type of Listing:</label>
                 <div className="flex gap-4">
                   <button
@@ -393,7 +393,7 @@ const List: React.FC = () => {
               </div>
 
               {/* Pickup / Drop-off */}
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col lg:flex-row  items-center gap-2">
                 <label className="self-start font-bold text-lg min-w-24 w-50">Pickup / Drop-off:</label>
                 <div className="flex gap-4">
                   <button
