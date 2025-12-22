@@ -11,7 +11,7 @@ const metadata: Metadata = {
   title: "EcoSwap",
   description: "EcoSwap - Sustainable Item Exchange",
   icons: {
-    icon: "/assets/ecoswap_icon.jpg",
+    icon: "/favicon.ico",
   }, 
 };
 
@@ -30,6 +30,10 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>EcoSwap</title>
+      </head>
       <body className={`${rubik.className} antialiased min-h-screen flex flex-col`}>
         
         {!hideLayout && <Header />}
