@@ -1,16 +1,32 @@
 // app/events/[id]/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase';
 
 export default function EventDetailsPage() {
   const params = useParams();
+  const router = useRouter();
   
   // State to manage the UI view (Form vs Success)
   const [isRegistered, setIsRegistered] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const checkAuthStatus = async () => {
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if(!user) {
+      router.push('/login');
+      return false;
+    }
+    return true;
+  }
+
+  useEffect(() => {
+    checkAuthStatus();
+  }, [router, createClient]);
 
   // Mock Data
   const eventDetails = {

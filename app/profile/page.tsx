@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
 import { title } from 'process';
+import { useRouter } from 'next/navigation';
 
 interface ItemImage {
   id: string;
@@ -101,6 +102,7 @@ const EcoScoreChart = ({ swaps }: { swaps: number }) => {
 
 export default function ProfilePage() {
   const supabase = createClient();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [listings, setListings] = useState<Listing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,30 +116,37 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchUserData = async () => {
 
-      const mockListings = [
-        {
-          id: 1,
-          title: "Eco-Friendly Backpack",
-          status: "active",
-          created_at: "2024-08-01T10:00:00Z",
-          item_images: [
-            { id: "img1", url: "/items/backpack.jpg" }
-          ]
-        },
-        {
-          id: 2,
-          title: "Reusable Water Bottle",
-          status: "active",
-          created_at: "2024-07-25T14:30:00Z",
-          item_images: [
-            { id: "img2", url: "/items/water_bottle.jpg" }
-          ]
-        }
-      ]
+      // const mockListings = [
+      //   {
+      //     id: 1,
+      //     title: "Eco-Friendly Backpack",
+      //     status: "active",
+      //     created_at: "2024-08-01T10:00:00Z",
+      //     item_images: [
+      //       { id: "img1", url: "/items/backpack.jpg" }
+      //     ]
+      //   },
+      //   {
+      //     id: 2,
+      //     title: "Reusable Water Bottle",
+      //     status: "active",
+      //     created_at: "2024-07-25T14:30:00Z",
+      //     item_images: [
+      //       { id: "img2", url: "/items/water_bottle.jpg" }
+      //     ]
+      //   }
+      // ]
 
       // Get current user
       const { data: { user: currentUser } } = await supabase.auth.getUser();
       setUser(currentUser);
+
+      // If user not logged in, redirect to login page
+      if (!currentUser) {
+        setLoading(false);
+        router.push('/login');
+        return;
+      }
 
       if (currentUser) {
         // Fetch user stats from users table (items donated/swapped after deal completion)
@@ -182,7 +191,7 @@ export default function ProfilePage() {
     };
 
     fetchUserData();
-  }, []);
+  }, [router, supabase]);
 
   // Format join date
   const formatJoinDate = (dateString: string | undefined) => {

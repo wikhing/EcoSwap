@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -33,8 +35,29 @@ const HeroLanding: React.FC = () => {
 };
 
 const Banner: React.FC = () => {
+  const [animate, setAnimate] = React.useState(false);
+  const sectionRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setAnimate(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <div className="w-full h-[50dvh] lg:h-screen overflow-hidden">
+    <div ref={sectionRef} className=" relative w-full h-[50dvh] lg:h-screen overflow-hidden">
       <Image
         width={1000}
         height={500}
@@ -44,6 +67,22 @@ const Banner: React.FC = () => {
       />
 
       {/* Animation Text Go In */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 mb-[40%] md:mb-[30%]">
+        <p
+          className={`text-xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-(--black-color) drop-shadow-md md:py-3 lg:py-5 transform transition-all duration-700 ease-out ${
+            animate ? '-translate-x-16 md:-translate-x-[40%] lg:-translate-x-[50%] text-left md:text-left opacity-100' : 'translate-x-0 opacity-0'
+          }`}
+        >
+          Swap, Reuse, Live Better
+        </p>
+        <p
+          className={`text-2xl md:text-5xl lg:text-6xl xl:text-8xl text-(--black-color) mt-6 font-bold drop-shadow-md md:py-3 lg:py-5 transform transition-all duration-700 ease-out delay-150 ${
+            animate ? 'translate-x-16 md:translate-x-[20%] text-right md:text-right opacity-100' : 'translate-x-0 opacity-0'
+          }`}
+        >
+          One Swap at a Time
+        </p>
+      </div>
     </div>
   );
 };

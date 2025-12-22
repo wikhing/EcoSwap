@@ -114,6 +114,11 @@ export default function ItemDetails() {
         // Fetch current authenticated user
         const fetchUser = async () => {
             const { data: { user } } = await supabase.auth.getUser();
+            if(!user) {
+                setCurrentUser(null);
+                router.push('/login');
+                return;
+            }
             if (user) {
                 setCurrentUser({ id: user.id });
             }
@@ -196,7 +201,7 @@ export default function ItemDetails() {
         };
 
         fetchData();
-    }, [id]);
+    }, [id, supabase, router]);
 
     if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
     if (!item) return <div className="min-h-screen flex items-center justify-center">Item not found</div>;
