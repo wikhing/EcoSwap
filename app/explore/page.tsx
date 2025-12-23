@@ -326,22 +326,22 @@ const ExplorePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <div className="min-h-screen">
 
-      <Hero title="Explore Items" subtitle="Find items to swap, donate, or discover" />
+        <Hero title="Explore Items" subtitle="Find items to swap, donate, or discover" />
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 py-8">
 
-        <div className='bg-white rounded-2xl p-8 mb-8'>
-          <h2 className='text-3xl text-center text-(--green-color) font-bold mb-2'>Safety Disclaimer</h2>
-          <p className='text-justify mb-2 font-bold'>EcoSwap only provides a platform for users to list and discover items. All exchanges, meet-ups, and communications are conducted entirely at the users&apos; own discretion and risk. EcoSwap and its developers are not responsible for any disputes, losses, damages, or safety issues arising from interactions between users. Users are advised to take necessary precautions and ensure their own safety when dealing with others.</p>
-        </div>
+          <div className='bg-white rounded-2xl p-8 mb-8'>
+            <h2 className='text-3xl text-center text-(--green-color) font-bold mb-2'>Safety Disclaimer</h2>
+            <p className='text-justify mb-2 font-bold'>EcoSwap only provides a platform for users to list and discover items. All exchanges, meet-ups, and communications are conducted entirely at the users&apos; own discretion and risk. EcoSwap and its developers are not responsible for any disputes, losses, damages, or safety issues arising from interactions between users. Users are advised to take necessary precautions and ensure their own safety when dealing with others.</p>
+          </div>
 
-        {/* Search & Filter Bar */}
-        <div className="flex gap-4 mb-8">
-          <div className="relative grow bg-white rounded-full">
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" size={20} />
-            <Suspense>
+          {/* Search & Filter Bar */}
+          <div className="flex gap-4 mb-8">
+            <div className="relative grow bg-white rounded-full">
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" size={20} />
               <input
                 type="text"
                 placeholder="Search for items..."
@@ -349,71 +349,71 @@ const ExplorePage: React.FC = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </Suspense>
-          </div>
-          <button
-            onClick={() => setIsFilterOpen(true)}
-            className="bg-white p-4 rounded-full shadow-sm hover:bg-gray-50 text-(--black-color)"
-            aria-label='Menu'
-          >
-            <Menu className="text-(--black-color)" size={28} />
-          </button>
-        </div>
-
-        {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-6 mb-12">
-          <Button variant="toggle" active={activeTab === 'All'} onClick={() => setActiveTab('All')}>
-            All
-          </Button>
-          <Button variant="toggle" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
-            <Sprout className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
-            Donate
-          </Button>
-          <Button variant="toggle" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
-            <Recycle className={activeTab === 'Swap' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
-            Swap
-          </Button>
-        </div>
-
-        {/* Product Grid */}
-        {isLoading && page === 1 ? (
-          <div className="text-center py-20 text-gray-500">Loading items...</div>
-        ) : displayedItems.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
-            {displayedItems.map((item) => (
-              <ProductCard key={item.id} product={item} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-xl text-gray-600 font-bold">No items found.</p>
-            <p className="text-gray-500">Try adjusting your filters or search terms.</p>
-          </div>
-        )}
-
-        {/* Load More Button */}
-        {displayedItems.length < items.length && (
-          <div className="text-center pb-12">
+            </div>
             <button
-              onClick={handleLoadMore}
-              className="text-(--black-color) text-lg font-medium border-b-2 border-(--black-color) hover:text-(--green-color) hover:border-(--green-color) transition-colors pb-1"
+              onClick={() => setIsFilterOpen(true)}
+              className="bg-white p-4 rounded-full shadow-sm hover:bg-gray-50 text-(--black-color)"
+              aria-label='Menu'
             >
-              Load More
+              <Menu className="text-(--black-color)" size={28} />
             </button>
           </div>
-        )}
 
+          {/* Tabs */}
+          <div className="flex flex-wrap justify-center gap-6 mb-12">
+            <Button variant="toggle" active={activeTab === 'All'} onClick={() => setActiveTab('All')}>
+              All
+            </Button>
+            <Button variant="toggle" active={activeTab === 'Donate'} onClick={() => setActiveTab('Donate')}>
+              <Sprout className={activeTab === 'Donate' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
+              Donate
+            </Button>
+            <Button variant="toggle" active={activeTab === 'Swap'} onClick={() => setActiveTab('Swap')}>
+              <Recycle className={activeTab === 'Swap' ? "fill-current" : "text-(--green-color) fill-current"} size={24} />
+              Swap
+            </Button>
+          </div>
+
+          {/* Product Grid */}
+          {isLoading && page === 1 ? (
+            <div className="text-center py-20 text-gray-500">Loading items...</div>
+          ) : displayedItems.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-12">
+              {displayedItems.map((item) => (
+                <ProductCard key={item.id} product={item} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20">
+              <p className="text-xl text-gray-600 font-bold">No items found.</p>
+              <p className="text-gray-500">Try adjusting your filters or search terms.</p>
+            </div>
+          )}
+
+          {/* Load More Button */}
+          {displayedItems.length < items.length && (
+            <div className="text-center pb-12">
+              <button
+                onClick={handleLoadMore}
+                className="text-(--black-color) text-lg font-medium border-b-2 border-(--black-color) hover:text-(--green-color) hover:border-(--green-color) transition-colors pb-1"
+              >
+                Load More
+              </button>
+            </div>
+          )}
+
+        </div>
+
+        {/* Filter Sidebar Modal */}
+        <FilterSidebar
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          filters={filters}
+          setFilters={setFilters}
+          onApply={handleApplyFilters}
+        />
       </div>
-
-      {/* Filter Sidebar Modal */}
-      <FilterSidebar
-        isOpen={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
-        filters={filters}
-        setFilters={setFilters}
-        onApply={handleApplyFilters}
-      />
-    </div>
+    </Suspense>
   );
 }
 
