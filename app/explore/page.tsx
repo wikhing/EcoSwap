@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Search, Menu, X, Sprout, Recycle, Filter } from 'lucide-react';
 import Hero from '../components/hero';
@@ -341,13 +341,15 @@ const ExplorePage: React.FC = () => {
         <div className="flex gap-4 mb-8">
           <div className="relative grow bg-white rounded-full">
             <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-(--light-grey-color)" size={20} />
-            <input
-              type="text"
-              placeholder="Search for items..."
-              className="w-full py-4 pl-16 pr-6 rounded-full shadow-sm border-none focus:ring-2 focus:ring-(--green-color) text-lg text-(--black-color) placeholder-(--light-grey-color)"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
+            <Suspense>
+              <input
+                type="text"
+                placeholder="Search for items..."
+                className="w-full py-4 pl-16 pr-6 rounded-full shadow-sm border-none focus:ring-2 focus:ring-(--green-color) text-lg text-(--black-color) placeholder-(--light-grey-color)"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </Suspense>
           </div>
           <button
             onClick={() => setIsFilterOpen(true)}
