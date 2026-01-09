@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mail, Calendar, MapPin, Trophy, Sprout, Recycle } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { Mail, Calendar, MapPin, Trophy, Sprout, Recycle, X, Upload, Phone } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
 import { createClient } from '@/lib/supabase';
 import { User } from '@supabase/supabase-js';
 import { title } from 'process';
@@ -112,6 +112,14 @@ export default function ProfilePage() {
     itemsSwapped: 0,
     co2Saved: 0
   });
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    full_name: '',
+    avatar_url: '',
+    // phone_number: ''
+  });
+  const [saving, setSaving] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -146,6 +154,15 @@ export default function ProfilePage() {
         setLoading(false);
         router.push('/login');
         return;
+      }
+
+      // Initialize edit form with current user data
+      if (currentUser) {
+        setEditForm({
+          full_name: currentUser.user_metadata?.full_name || '',
+          avatar_url: currentUser.user_metadata?.avatar_url || '',
+          // phone_number: currentUser.user_metadata?.phone_number || ''
+        });
       }
 
       if (currentUser) {
@@ -215,6 +232,57 @@ export default function ProfilePage() {
     alert('Tab navigation is not implemented in this demo.');
   }
 
+  const handleEditProfile = () => {
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+
+    setSaving(true);
+    try {
+      // Update auth metadata
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          full_name: editForm.full_name,
+          avatar_url: editForm.avatar_url,
+          // phone_number: editForm.phone_number
+        }
+      });
+
+      if (error) throw error;
+
+      // Update phone_number in users table
+      // await supabase
+      //   .from('users')
+      //   .update({ phone_number: editForm.phone_number })
+      //   .eq('id', user.id);
+
+      // Update local user state
+      const { data: { user: updatedUser } } = await supabase.auth.getUser();
+      setUser(updatedUser);
+      setIsEditModalOpen(false);
+      alert('Profile updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        setEditForm({ ...editForm, avatar_url: dataUrl });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const stats = [
     { label: "ITEMS DONATED", value: userStats.itemsDonated.toString() },
     { label: "SUCCESSFUL SWAPS", value: userStats.itemsSwapped.toString() },
@@ -270,7 +338,10 @@ export default function ProfilePage() {
             <p className="text-sm text-(--dark-grey-color) mb-6">UM Student</p>
 
             {/* Edit Button */}
-            <button className="w-full border border-[#CCCCCC] text-(--black-color) font-semibold py-2 rounded-lg hover:bg-gray-50 transition text-sm mb-8">
+            <button 
+              onClick={handleEditProfile}
+              className="w-full border border-[#CCCCCC] text-(--black-color) font-semibold py-2 rounded-lg hover:bg-gray-50 transition text-sm mb-8"
+            >
               Edit Profile
             </button>
 
@@ -279,6 +350,17 @@ export default function ProfilePage() {
               <div className="flex items-center text-(--dark-grey-color) text-sm">
                 <Mail className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
                 <span className="truncate">{user.email}</span>
+              </div>
+              {/* Show phone number here */}
+              {/* {user.user_metadata?.phone_number && (
+                <div className="flex items-center text-(--dark-grey-color) text-sm">
+                  <Phone className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
+                  <span>{user.user_metadata.phone_number}</span>
+                </div>
+              )} */}
+              <div className="flex items-center text-(--dark-grey-color) text-sm">
+                <Phone className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
+                <span>+60 111 1111</span>
               </div>
               <div className="flex items-center text-(--dark-grey-color) text-sm">
                 <Calendar className="w-4 h-4 mr-3 text-(--dark-grey-color)" />
@@ -358,6 +440,113 @@ export default function ProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-black opacity-50" onClick={() => setIsEditModalOpen(false)}></div>
+          <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setIsEditModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              aria-label='close_btn'
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <h2 className="text-2xl font-bold text-(--black-color) mb-6">Edit Profile</h2>
+
+            <div className="space-y-4">
+              {/* Full Name Input */}
+              <div>
+                <label className="block text-sm font-medium text-(--dark-grey-color) mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  value={editForm.full_name}
+                  onChange={(e) => setEditForm({ ...editForm, full_name: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--green-color) focus:border-transparent"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <label className="block text-sm font-medium text-(--dark-grey-color) mb-2">
+                  Profile Picture
+                </label>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  aria-label='avatar_image'
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition"
+                >
+                  <Upload className="w-4 h-4 text-(--green-color)" />
+                  <span className="text-(--dark-grey-color) font-medium">Upload Image</span>
+                </button>
+                <p className="text-xs text-(--dark-grey-color) mt-1">
+                  JPG, PNG or GIF (Max 5MB)
+                </p>
+              </div>
+
+              {/* Avatar Preview */}
+              {editForm.avatar_url && (
+                <div className="flex flex-col items-center">
+                  <p className="text-sm font-medium text-(--dark-grey-color) mb-2">Preview:</p>
+                  <div className="relative w-24 h-24">
+                    <Image
+                      src={editForm.avatar_url}
+                      alt="Avatar preview"
+                      fill
+                      className="rounded-full object-cover border-2 border-gray-200"
+                      onError={() => setEditForm({ ...editForm, avatar_url: '' })}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Phone Number Input */}
+              {/* <div>
+                <label className="block text-sm font-medium text-(--dark-grey-color) mb-2">
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={editForm.phone_number}
+                  onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-(--green-color) focus:border-transparent"
+                  placeholder="Enter your phone number"
+                />
+              </div> */}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setIsEditModalOpen(false)}
+                className="flex-1 border border-gray-300 text-(--dark-grey-color) font-semibold py-2 rounded-lg hover:bg-gray-50 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveProfile}
+                disabled={saving}
+                className="flex-1 bg-(--green-color) text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {saving ? 'Saving...' : 'Save Changes'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
