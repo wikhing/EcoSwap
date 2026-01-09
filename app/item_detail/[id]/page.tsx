@@ -108,6 +108,7 @@ export default function ItemDetails() {
     const [item, setItem] = useState<Item | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null);
+    const [whatsappLoading, setWhatsappLoading] = useState(false);
     const supabase = createClient();
 
     useEffect(() => {
@@ -210,6 +211,47 @@ export default function ItemDetails() {
     const isOwner = currentUser?.id === item.owner_id;
     const isCompleted = item.status === 'completed';
 
+    const handleWhatsappContact = async () => {
+        if (!item) return;
+        
+        setWhatsappLoading(true);
+        try {
+            // Fetch the owner's phone number from Supabase
+            // const { data: userData, error } = await supabase
+            //     .from('users')
+            //     .select('phone_number')
+            //     .eq('id', item.owner_id)
+            //     .single();
+
+            // if (error) {
+            //     console.error('Error fetching phone number:', error);
+            //     alert('Could not fetch phone number. Please try again.');
+            //     setWhatsappLoading(false);
+            //     return;
+            // }
+
+            // const phoneNumber = userData?.phone_number;
+            const phoneNumber = "601121850992"; // Mocked phone number for testing
+            if (!phoneNumber) {
+                alert('Owner has not set a phone number yet.');
+                setWhatsappLoading(false);
+                return;
+            }
+
+            // Format phone number for WhatsApp (remove any non-digit characters and add country code if needed)
+            const formattedPhone = phoneNumber.replace(/\D/g, '');
+            
+            // Redirect to WhatsApp
+            const whatsappUrl = `https://wa.me/${formattedPhone}?text=Hi, I'm interested in your "${item.title}" item listed on EcoSwap`;
+            window.open(whatsappUrl, '_blank');
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setWhatsappLoading(false);
+        }
+    };
+
     return (
         <div className="min-h-screen flex flex-col">
             <Hero title="Item Details" subtitle="Everything you need to know about this item." />
@@ -283,9 +325,13 @@ export default function ItemDetails() {
 
                         {/* === BUTTON SECTION (Mocked to always show) === */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-4">
-                            <button className="flex-1 bg-(--green-color) text-white font-bold py-1 rounded-full shadow-lg hover:opacity-90 transition-all flex items-center justify-center text-md">
+                            <button 
+                                onClick={handleWhatsappContact}
+                                disabled={whatsappLoading}
+                                className="flex-1 bg-(--green-color) text-white font-bold py-1 rounded-full shadow-lg hover:opacity-90 transition-all flex items-center justify-center text-md disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
                                 <WhatsAppIcon />
-                                Contact via Whatsapp
+                                {whatsappLoading ? 'Loading...' : 'Contact via Whatsapp'}
                             </button>
                             <button className="flex-1 bg-white border border-gray-200 text-(--green-color) font-bold py-1 rounded-full shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center text-md">
                                 <Mail className="mr-2" size={20} />
