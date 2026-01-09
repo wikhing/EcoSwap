@@ -519,6 +519,7 @@ export default function ProfilePage() {
                   Phone Number
                 </label>
                 <input
+                  aria-placeholder='e.g. 6012 345 6789'
                   type="tel"
                   value={editForm.phone_number}
                   onChange={(e) => setEditForm({ ...editForm, phone_number: e.target.value })}
